@@ -5,7 +5,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.example.tpproject.fragments.ChatFragment
 import com.example.tpproject.fragments.HomeFragment
-import com.example.tpproject.fragments.PropertyFragment
+import com.example.tpproject.fragments.CreatePropertyFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity() {
         val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottom_navigation)
 
         val homeFragment = HomeFragment()
-        val propertFragment = PropertyFragment()
+        val propertFragment = CreatePropertyFragment()
         val chatFragment = ChatFragment()
 
         makeCurrentFragment(homeFragment)
@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
         bottomNavigation.setOnNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.ic_home -> makeCurrentFragment(homeFragment)
-                R.id.ic_news -> makeCurrentFragment(propertFragment)
+                R.id.ic_add -> makeCurrentFragment(propertFragment)
                 R.id.ic_chat -> makeCurrentFragment(chatFragment)
             }
             true

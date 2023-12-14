@@ -8,9 +8,9 @@
         />
 
     <item
-        android:id="@+id/ic_news"
+        android:id="@+id/ic_add"
         android:icon="@drawable/newsicon"
-        android:title="News"
+        android:title="Add"
         />
 
     <item

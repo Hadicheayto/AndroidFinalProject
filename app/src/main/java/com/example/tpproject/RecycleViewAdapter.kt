@@ -14,6 +14,8 @@ class RecycleViewAdapter(
     private val clickListener:(Property) -> Unit
 ) : RecyclerView.Adapter<MyViewHolder>(){
 
+    private var filteredList: List<Property> = propertyList
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         val listItem = layoutInflater.inflate(R.layout.list_item,parent,false)
@@ -21,12 +23,20 @@ class RecycleViewAdapter(
     }
 
     override fun getItemCount(): Int {
-        return propertyList.size
+        return filteredList.size
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.Bind(propertyList[position],clickListener)
+        holder.Bind(filteredList[position], clickListener)
     }
+
+    fun filterList(query: String) {
+        filteredList = propertyList.filter { property ->
+            property.title.contains(query, ignoreCase = true)
+        }
+        notifyDataSetChanged()
+    }
+
 
 
 }
