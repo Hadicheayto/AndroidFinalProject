@@ -27,7 +27,7 @@ class HomeFragment : Fragment() {
 
 
     private val propertyList = listOf(
-        Property("hadi cheayto", 81640833, "villa", "villa sur mer", "rawche", 300000, R.drawable.property1),
+        Property("hadi cheayto", 81640833, "villa", "villa sur mer sur la poiramide et voila", "rawche", 300000, R.drawable.property1),
         Property("hadi cheayto", 81640833, "house", "big house", "rawche", 18000, R.drawable.property2),
         Property("hadi cheayto", 81640833, "apartment", "large apartment", "rawche", 15000, R.drawable.property3),
         Property("hadi cheayto", 81640833, "cabana", "cabana sur mer", "rawche", 90000, R.drawable.property2),

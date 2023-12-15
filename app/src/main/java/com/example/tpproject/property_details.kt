@@ -26,11 +26,11 @@ class property_details : AppCompatActivity() {
         val phoneNumberName = findViewById<TextView>(R.id.PhoneNumber_details)
 
         imgUrlName.setImageResource(imgUrl)
-        titleName.text = "title: ${title}"
-        descriptionName.text = "Description: ${description}"
-        priceName.text = "Price: ${price.toString()}$"
-        locationName.text = "Location: ${location}"
-        supplierName.text = "Supplier: ${supplier}"
-        phoneNumberName.text = "Phone Number: ${phoneNumber.toString()}"
+        titleName.text = title
+        descriptionName.text = description
+        priceName.text ="${price.toString()}$"
+        locationName.text = location
+        supplierName.text = supplier
+        phoneNumberName.text = phoneNumber.toString()
     }
 }
