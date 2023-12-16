@@ -1,5 +1,6 @@
 package com.example.tpproject.fragments
 
+
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -11,12 +12,17 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.tpproject.Property
+import com.example.tpproject.PropertyViewModel
+import com.example.tpproject.data.Property
 import com.example.tpproject.R
 import com.example.tpproject.RecycleViewAdapter
 import com.example.tpproject.property_details
+import com.example.tpproject.utilities.InjectorUtils
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -26,19 +32,45 @@ class HomeFragment : Fragment() {
     private var param2: String? = null
 
 
-    private val propertyList = listOf(
-        Property("hadi cheayto", 81640833, "villa", "villa sur mer sur la poiramide et voila", "rawche", 300000, R.drawable.property1),
-        Property("hadi cheayto", 81640833, "house", "big house", "rawche", 18000, R.drawable.property2),
-        Property("hadi cheayto", 81640833, "apartment", "large apartment", "rawche", 15000, R.drawable.property3),
-        Property("hadi cheayto", 81640833, "cabana", "cabana sur mer", "rawche", 90000, R.drawable.property2),
-    )
+//    private val propertyList = listOf(
+//        Property("hadi cheayto", 81640833, "villa", "villa sur mer sur la poiramide et voila", "rawche", 300000, R.drawable.property1),
+//        Property("hadi cheayto", 81640833, "house", "big house", "rawche", 18000, R.drawable.property2),
+//        Property("hadi cheayto", 81640833, "apartment", "large apartment", "rawche", 15000, R.drawable.property3),
+//        Property("hadi cheayto", 81640833, "cabana", "cabana sur mer", "rawche", 90000, R.drawable.property2),
+//    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initializeUi()
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+    }
+
+    private val propertyList = mutableListOf<Property>()
+
+
+    private fun initializeUi() {
+        val factory = InjectorUtils.providedPropertiesViewModelFactory()
+        val viewModel = ViewModelProvider(this, factory).get(PropertyViewModel::class.java)
+
+        propertyList.clear()
+
+        viewModel.getProperty().observe(this, Observer { properties ->
+
+            properties.forEach{property ->
+                propertyList.add(property)
+            }
+
+
+            val result = view?.findViewById<TextView>(R.id.tvResult)
+            if (result != null) {
+                result.text = propertyList.size.toString() + " Result Found"
+            }
+        })
+
+        // Rest of your initialization code
     }
 
     private var filteredPropertyList: List<Property> = propertyList
@@ -59,8 +91,7 @@ class HomeFragment : Fragment() {
         }
 
 
-        val result = view.findViewById<TextView>(R.id.tvResult)
-        result.text = propertyList.size.toString() + " Result Found"
+
 
         val searchBar = view.findViewById<EditText>(R.id.SearchBar);
 
@@ -69,7 +100,13 @@ class HomeFragment : Fragment() {
                 // Not needed for this example
             }
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
                 filterProperties(s.toString())
+                val result = view?.findViewById<TextView>(R.id.tvResult)
+                if (result != null) {
+                    result.text = filteredPropertyList.size.toString() + " Result Found"
+                }
+
             }
             override fun afterTextChanged(s: Editable?) {
                 // Not needed for this example
