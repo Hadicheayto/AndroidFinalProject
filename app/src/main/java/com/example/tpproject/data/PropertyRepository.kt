@@ -61,3 +61,4 @@ class PropertyRepository private constructor(private val dataBaseHandler: DataBa
             }
     }
 }
+
