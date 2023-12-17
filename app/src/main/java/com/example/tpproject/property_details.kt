@@ -12,7 +12,7 @@ class property_details : AppCompatActivity() {
         val imgUrl = intent.getIntExtra("imgUrl",0)
         val title = intent.getStringExtra("title")
         val description = intent.getStringExtra("description")
-        val price = intent.getIntExtra("price", 0)
+        val price = intent.getLongExtra("price", 0)
         val location = intent.getStringExtra("location")
         val supplier = intent.getStringExtra("supplier")
         val phoneNumber = intent.getIntExtra("phoneNumber",0)
@@ -28,7 +28,7 @@ class property_details : AppCompatActivity() {
         imgUrlName.setImageResource(imgUrl)
         titleName.text = title
         descriptionName.text = description
-        priceName.text ="${price.toString()}$"
+        priceName.text = price.toString()
         locationName.text = location
         supplierName.text = supplier
         phoneNumberName.text = phoneNumber.toString()

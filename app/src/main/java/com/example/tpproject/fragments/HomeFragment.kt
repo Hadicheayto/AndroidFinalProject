@@ -44,7 +44,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initializeUi()
+        //initializeUi()
     }
 
     private fun initializeUi() {
@@ -56,7 +56,11 @@ class HomeFragment : Fragment() {
             propertyList.addAll(properties)
             Log.e("msg:","msg:${properties}")
             updateRecyclerView()
+            val result = view?.findViewById<TextView>(R.id.tvResult)
+            result?.text = properties.size.toString() + " Result Found"
         })
+
+
 
 
     }
@@ -66,7 +70,7 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
-
+        initializeUi()
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.setBackgroundColor(Color.TRANSPARENT)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -116,7 +120,7 @@ class HomeFragment : Fragment() {
     private fun listItemClicked(property: Property) {
         val intent = Intent(requireContext(), property_details::class.java)
         intent.putExtra("supplier", "hadi")
-        intent.putExtra("phoneNumber", "81640833")
+        intent.putExtra("phoneNumber", property.phonenumber)
         intent.putExtra("imgUrl", property.image)
         intent.putExtra("title", property.title)
         intent.putExtra("description", property.description)

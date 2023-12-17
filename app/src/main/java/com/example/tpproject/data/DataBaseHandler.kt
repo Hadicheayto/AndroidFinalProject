@@ -18,21 +18,27 @@ val COL_DESCRIPTION = "description"
 val COL_IMAGEURL = "imageurl"
 val COL_DATE = "date"
 val COL_Active = "active"
+val COL_SUPPLIER = "supplier"
+val COL_PHONENUMBER= "phonenumber"
 
-class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,null,1)
+class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,null,2)
 {
     override fun onCreate(p0: SQLiteDatabase?) {
 
         val CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " (" +
                 COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 COL_USERID + " INTEGER," +
-                COL_Price + " DOUBLE," +
+                COL_Price + " LONG," +
                 COL_Location + " VARCHAR(256)," +
                 COL_TITLE + " VARCHAR(256)," +
                 COL_DESCRIPTION + " VARCHAR(256)," +
                 COL_IMAGEURL + " VARCHAR(256)," +
                 COL_Active + " INTEGER," +
+                COL_SUPPLIER + " VARCHAR(256)," +
+                COL_PHONENUMBER + " INTEGER," +
                 COL_DATE + " VARCHAR(256))";
+
+        //val CREATE_TABLE = "DROP TABLE " + TABLE_NAME
 
 
 
@@ -54,7 +60,8 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, DATABASE_NAM
             put("user_id", property.user_id)
             put("price", property.price)
             put("location", property.location)
-
+            put("supplier", property.supplier)
+            put("phonenumber",property.phonenumber)
             put("active", property.active)
         }
         return db.insert(TABLE_NAME, null, values)
@@ -70,16 +77,18 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, DATABASE_NAM
             while (moveToNext()) {
                 val id = cursor.getLong(cursor.getColumnIndexOrThrow("id"))
                 val user_id = cursor.getInt(cursor.getColumnIndexOrThrow("user_id"))
-                val price = cursor.getDouble(cursor.getColumnIndex("price"))
+                val price = cursor.getLong(cursor.getColumnIndex("price"))
                 val location = cursor.getString(cursor.getColumnIndexOrThrow("location"))
                 val title = cursor.getString(cursor.getColumnIndexOrThrow("title"))
                 val description = cursor.getString(cursor.getColumnIndexOrThrow("description"))
                 val imageurl = cursor.getString(cursor.getColumnIndexOrThrow("imageurl"))
                 val date = cursor.getString(cursor.getColumnIndexOrThrow("date"))
+                val supplier = cursor.getString(cursor.getColumnIndexOrThrow("supplier"))
+                val phonenumber = cursor.getInt(cursor.getColumnIndexOrThrow("phonenumber"))
                 val active = cursor.getInt(cursor.getColumnIndexOrThrow("active"))// Convert to boolean if needed
 
 
-                properties.add(Property(id, user_id,date,title,description,location,price,imageurl,active))
+                properties.add(Property(id, user_id,date,title,description,location,price,imageurl,supplier,phonenumber,active))
             }
             close()
         }

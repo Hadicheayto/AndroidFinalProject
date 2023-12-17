@@ -1,10 +1,9 @@
 package com.example.tpproject.fragments
 
-import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -20,11 +19,14 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.tpproject.R
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModelProvider
 import com.example.tpproject.PropertyViewModel
 import com.example.tpproject.data.Property
 import com.example.tpproject.utilities.InjectorUtils
 import com.google.android.material.textfield.TextInputLayout
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 
 private const val ARG_PARAM1 = "param1"
@@ -41,9 +43,13 @@ class CreatePropertyFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+
     }
 
+
+
     private lateinit var imageAddPhoto: ImageView
+    var spinnerTitleResult = ""
 
     private val pickImage =
         registerForActivityResult(ActivityResultContracts.GetContent()) { result ->
@@ -53,12 +59,19 @@ class CreatePropertyFragment : Fragment() {
             }
         }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_property_create, container, false)
+
+        val descriptionEditText = view?.findViewById<EditText>(R.id.edDiscription)
+        val locationEditText = view?.findViewById<EditText>(R.id.edLocation)
+        val priceEditText = view?.findViewById<EditText>(R.id.edPrice)
+        val supplierNameEditText = view?.findViewById<EditText>(R.id.edSupplierName)
+        val phoneNumberEditText = view?.findViewById<EditText>(R.id.edPhoneNumber)
 
         // code for the dropdown butt
         val items = listOf("title", "villa", "apartment", "kabana")
@@ -95,29 +108,53 @@ class CreatePropertyFragment : Fragment() {
         // Set click listener to validate the form and add property
         buttonAddProperty.setOnClickListener {
 
-            val property = Property(
-                title = "home",
-                description = "i like this home",
-                location = "beirut",
-                price = 10000.0,
-                active = 1,
-                date = "10/10/10",
-                id = 1,
-                image = "url",
-                user_id = 1
-            )
-
-            // Add the property to the database using your ViewModel
-            val factory = InjectorUtils.providePropertiesViewModelFactory(requireContext())
-            val viewModel = ViewModelProvider(this, factory).get(PropertyViewModel::class.java)
-
-            viewModel.addProperty(property)
-
-            // Display a success message
-            Toast.makeText(requireContext(), "Property added successfully", Toast.LENGTH_SHORT).show()
 
 
-            if (validateForm(view)) {
+
+            if (validateForm(
+                    descriptionEditText,
+                    locationEditText,
+                    priceEditText,
+                    supplierNameEditText,
+                    phoneNumberEditText,
+                    view
+                )
+            ) {
+
+                if(spinnerTitleResult != "")
+                {
+
+                    val currentDate = LocalDate.now()
+                    val dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                    val formattedDate = currentDate.format(dateFormat)
+
+                    val property = Property(
+                        title = spinnerTitleResult,
+                        description = descriptionEditText?.text.toString(),
+                        location = locationEditText?.text.toString(),
+                        price = priceEditText?.text.toString().toLong(),
+                        active = 1,
+                        date = formattedDate,
+                        id = 1,
+                        image = "url",
+                        user_id = 1,
+                        supplier = supplierNameEditText?.text.toString(),
+                        phonenumber = phoneNumberEditText?.text.toString().toInt()
+                    )
+
+                    Log.e("Response", "get meme data: $property")
+
+                    // Add the property to the database using your ViewModel
+                    val factory = InjectorUtils.providePropertiesViewModelFactory(requireContext())
+                    val viewModel = ViewModelProvider(this, factory).get(PropertyViewModel::class.java)
+                    viewModel.addProperty(property)
+
+                    Toast.makeText(requireContext(), "Property added successfully", Toast.LENGTH_SHORT).show()
+
+
+                }
+
+
 
 
                 // Create a Property object
@@ -136,23 +173,29 @@ class CreatePropertyFragment : Fragment() {
         pickImage.launch(intent.toString())
     }
 
-    private fun validateForm(view: View): Boolean {
+    private fun validateForm(
+        descriptionEditText: EditText?,
+        locationEditText: EditText?,
+        priceEditText: EditText?,
+        supplierNameEditText: EditText?,
+        phoneNumberEditText: EditText?,
+        view: View
+    ): Boolean {
         var isValid = true
 
         // Validate Description
-        val descriptionEditText = view.findViewById<EditText>(R.id.edDiscription)
         val descriptionContainer = view.findViewById<TextInputLayout>(R.id.descriptionContainer)
-        if (descriptionEditText.text.toString().trim().isEmpty()) {
+        if (descriptionEditText?.text.toString().trim().isEmpty()) {
             descriptionContainer.error = "Description is required"
             isValid = false
-
         } else {
             descriptionContainer.error = null
+            Log.e("Response", "description: ${descriptionEditText?.text}")
         }
 
-        val locationEditText = view.findViewById<EditText>(R.id.edLocation)
+        // Validate Location
         val locationInputLayout = view.findViewById<TextInputLayout>(R.id.locationContainer)
-        if (locationEditText.text.toString().trim().isEmpty()) {
+        if (locationEditText?.text.toString().trim().isEmpty()) {
             locationInputLayout.error = "Location is required"
             isValid = false
         } else {
@@ -160,9 +203,8 @@ class CreatePropertyFragment : Fragment() {
         }
 
         // Validate Price
-        val priceEditText = view.findViewById<EditText>(R.id.edPrice)
         val priceInputLayout = view.findViewById<TextInputLayout>(R.id.priceContainer)
-        if (priceEditText.text.toString().trim().isEmpty()) {
+        if (priceEditText?.text.toString().trim().isEmpty()) {
             priceInputLayout.error = "Price is required"
             isValid = false
         } else {
@@ -170,9 +212,8 @@ class CreatePropertyFragment : Fragment() {
         }
 
         // Validate Supplier Name
-        val supplierNameEditText = view.findViewById<EditText>(R.id.edSupplierName)
         val supplierNameInputLayout = view.findViewById<TextInputLayout>(R.id.supplierContainer)
-        if (supplierNameEditText.text.toString().trim().isEmpty()) {
+        if (supplierNameEditText?.text.toString().trim().isEmpty()) {
             supplierNameInputLayout.error = "Supplier name is required"
             isValid = false
         } else {
@@ -180,9 +221,8 @@ class CreatePropertyFragment : Fragment() {
         }
 
         // Validate Phone Number
-        val phoneNumberEditText = view.findViewById<EditText>(R.id.edPhoneNumber)
         val phoneNumberInputLayout = view.findViewById<TextInputLayout>(R.id.phonenumberContainer)
-        if (phoneNumberEditText.text.toString().trim().isEmpty()) {
+        if (phoneNumberEditText?.text.toString().trim().isEmpty()) {
             phoneNumberInputLayout.error = "Phone number is required"
             isValid = false
         } else {
@@ -190,18 +230,13 @@ class CreatePropertyFragment : Fragment() {
         }
 
         // Validate Spinner
-
         val spinnerTitle = view.findViewById<Spinner>(R.id.spinnerTitle)
-        val spinnerInputLayout = view.findViewById<TextInputLayout>(R.id.spinnerContainer)
-
-// Assuming "title" is the default value
         val selectedTitlePosition = spinnerTitle.selectedItemPosition
         val selectedTitle = if (selectedTitlePosition != AdapterView.INVALID_POSITION) {
             spinnerTitle.adapter.getItem(selectedTitlePosition).toString()
         } else {
             ""
         }
-        Log.e("Response", "get meme data: $selectedTitle")
 
         if (selectedTitle == "title") {
             val errorText = "Please select a valid title"
@@ -213,10 +248,12 @@ class CreatePropertyFragment : Fragment() {
         } else {
             val errorView = spinnerTitle.selectedView as TextView
             errorView.error = null
+            spinnerTitleResult = selectedTitle
         }
 
         return isValid
     }
+
 
     companion object {
         @JvmStatic

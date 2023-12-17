@@ -48,15 +48,14 @@ class MyViewHolder(val view:View): RecyclerView.ViewHolder(view){
     val price  = view.findViewById<TextView>(R.id.tvPrice)
     val img = view.findViewById<ImageView>(R.id.ivImageProperty)
     val btn = view.findViewById<Button>(R.id.btnNext)
+    val date = view.findViewById<TextView>(R.id.tvDate)
 
     fun Bind(property: Property, clickListener:(Property) -> Unit){
         title.text = property.title
         location.text = property.location
         price.text = property.price.toString()
-//        img.setImageResource(property.image.toInt())
-//        Glide.with(img.context)
-//            .load(property.image) // Assuming property.image is a URL
-//            .into(img)
+        date.text = property.date
+
         btn. setOnClickListener{
             clickListener(property)
         }
