@@ -20,6 +20,10 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.tpproject.R
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.ViewModelProvider
+import com.example.tpproject.PropertyViewModel
+import com.example.tpproject.data.Property
+import com.example.tpproject.utilities.InjectorUtils
 import com.google.android.material.textfield.TextInputLayout
 
 
@@ -91,9 +95,33 @@ class CreatePropertyFragment : Fragment() {
         // Set click listener to validate the form and add property
         buttonAddProperty.setOnClickListener {
 
+            val property = Property(
+                title = "home",
+                description = "i like this home",
+                location = "beirut",
+                price = 10000.0,
+                active = 1,
+                date = "10/10/10",
+                id = 1,
+                image = "url",
+                user_id = 1
+            )
+
+            // Add the property to the database using your ViewModel
+            val factory = InjectorUtils.providePropertiesViewModelFactory(requireContext())
+            val viewModel = ViewModelProvider(this, factory).get(PropertyViewModel::class.java)
+
+            viewModel.addProperty(property)
+
+            // Display a success message
+            Toast.makeText(requireContext(), "Property added successfully", Toast.LENGTH_SHORT).show()
+
 
             if (validateForm(view)) {
-                // Add property logic here
+
+
+                // Create a Property object
+
             }
         }
 

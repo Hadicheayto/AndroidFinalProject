@@ -53,7 +53,7 @@ class MyViewHolder(val view:View): RecyclerView.ViewHolder(view){
         title.text = property.title
         location.text = property.location
         price.text = property.price.toString()
-        img.setImageResource(property.image)
+//        img.setImageResource(property.image.toInt())
 //        Glide.with(img.context)
 //            .load(property.image) // Assuming property.image is a URL
 //            .into(img)
