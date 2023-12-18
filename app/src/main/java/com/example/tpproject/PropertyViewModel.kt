@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.tpproject.data.Property
 import com.example.tpproject.data.PropertyRepository
+import com.example.tpproject.data.User
 
 //class PropertyViewModel(private val propertyRepository: PropertyRepository) : ViewModel() {
 //
@@ -25,8 +26,26 @@ class PropertyViewModel(private val propertyRepository: PropertyRepository) : Vi
         _properties.value = propertyRepository.getProperties().value
     }
 
-    fun addProperty(property: Property) {
-        propertyRepository.addProperty(property)
+    fun addProperty(property: Property): Long {
+        val id = propertyRepository.addProperty(property)
         _properties.value = propertyRepository.getProperties().value
+        return id;
     }
+
+    fun addUser(user: User) {
+        return propertyRepository.addUser(user)
+    }
+
+    fun getUserById(userId: Long): User? {
+        return propertyRepository.getUserById(userId)
+    }
+
+    fun editUser(user: User): Int {
+        return propertyRepository.editUser(user)
+    }
+
+    fun getPropertiesByUserId(userId: Long): List<Property> {
+        return propertyRepository.getPropertiesByUserId(userId)
+    }
+
 }

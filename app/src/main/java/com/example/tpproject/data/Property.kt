@@ -19,3 +19,14 @@ data class Property(
     val phonenumber:Int,
     val active: Int
 )
+
+
+data class User(
+    val id: Long,
+    val fname: String,
+    val lname: String,
+    val email: String,
+    val password: String,
+    val active: Int
+    // Add other user-related properties as needed
+)

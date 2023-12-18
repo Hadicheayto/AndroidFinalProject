@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -20,6 +21,7 @@ import com.example.tpproject.PropertyViewModel
 import com.example.tpproject.data.Property
 import com.example.tpproject.R
 import com.example.tpproject.RecycleViewAdapter
+import com.example.tpproject.profile
 import com.example.tpproject.property_details
 import com.example.tpproject.utilities.InjectorUtils
 
@@ -94,6 +96,14 @@ class HomeFragment : Fragment() {
                 // Not needed for this example
             }
         })
+
+
+        val profileIcon =view.findViewById<ImageView>(R.id.ivProfile)
+
+        profileIcon.setOnClickListener{
+            val intent = Intent(requireContext(), profile::class.java)
+            startActivity(intent)
+        }
 
         return view
     }

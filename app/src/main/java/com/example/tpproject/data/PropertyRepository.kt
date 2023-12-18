@@ -43,12 +43,30 @@ import androidx.lifecycle.MutableLiveData
 
 class PropertyRepository private constructor(private val dataBaseHandler: DataBaseHandler) {
 
-    fun addProperty(property: Property) {
-        dataBaseHandler.insertProperties(property)
+    fun addProperty(property: Property): Long {
+        return dataBaseHandler.insertProperties(property)
     }
 
     fun getProperties() = MutableLiveData<List<Property>>().apply {
         value = dataBaseHandler.getAllProperties()
+    }
+
+     //Add a method to insert a user
+    fun addUser(user: User)  {
+        dataBaseHandler.insertUser(user)
+    }
+
+     //Add a method to get a user by ID
+    fun getUserById(userId: Long): User? {
+        return dataBaseHandler.getUserById(userId)
+    }
+
+    fun editUser(user: User): Int {
+        return dataBaseHandler.editUser(user)
+    }
+
+    fun getPropertiesByUserId(userId: Long): List<Property> {
+        return dataBaseHandler.getPropertiesByUserId(userId)
     }
 
     companion object {

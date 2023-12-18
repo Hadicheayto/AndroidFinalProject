@@ -67,11 +67,13 @@ class CreatePropertyFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_property_create, container, false)
 
+        val spinnerTitle = view.findViewById<Spinner>(R.id.spinnerTitle)
         val descriptionEditText = view?.findViewById<EditText>(R.id.edDiscription)
         val locationEditText = view?.findViewById<EditText>(R.id.edLocation)
         val priceEditText = view?.findViewById<EditText>(R.id.edPrice)
         val supplierNameEditText = view?.findViewById<EditText>(R.id.edSupplierName)
         val phoneNumberEditText = view?.findViewById<EditText>(R.id.edPhoneNumber)
+        val buttonAddProperty = view.findViewById<Button>(R.id.btnAddProperty)
 
         // code for the dropdown butt
         val items = listOf("title", "villa", "apartment", "kabana")
@@ -103,7 +105,7 @@ class CreatePropertyFragment : Fragment() {
         }
 
 
-        val buttonAddProperty = view.findViewById<Button>(R.id.btnAddProperty)
+
 
         // Set click listener to validate the form and add property
         buttonAddProperty.setOnClickListener {
@@ -117,6 +119,7 @@ class CreatePropertyFragment : Fragment() {
                     priceEditText,
                     supplierNameEditText,
                     phoneNumberEditText,
+                    spinnerTitle,
                     view
                 )
             ) {
@@ -137,19 +140,34 @@ class CreatePropertyFragment : Fragment() {
                         date = formattedDate,
                         id = 1,
                         image = "url",
-                        user_id = 1,
+                        user_id = 20,
                         supplier = supplierNameEditText?.text.toString(),
                         phonenumber = phoneNumberEditText?.text.toString().toInt()
                     )
 
-                    Log.e("Response", "get meme data: $property")
+                    //Log.e("Response", "get meme data: $property")
 
                     // Add the property to the database using your ViewModel
                     val factory = InjectorUtils.providePropertiesViewModelFactory(requireContext())
                     val viewModel = ViewModelProvider(this, factory).get(PropertyViewModel::class.java)
-                    viewModel.addProperty(property)
+                    val addedProperty = viewModel.addProperty(property)
+                    if(addedProperty > 0)
+                    {
+                        Toast.makeText(requireContext(), "Property added successfully", Toast.LENGTH_SHORT).show()
+                        descriptionEditText?.setText("")
+                        locationEditText?.setText("")
+                        priceEditText?.setText("")
+                        supplierNameEditText?.setText("")
+                        phoneNumberEditText?.setText("")
+                        spinnerTitle.setSelection(0)
 
-                    Toast.makeText(requireContext(), "Property added successfully", Toast.LENGTH_SHORT).show()
+
+
+                    }else
+                    {
+                        Toast.makeText(requireContext(), "error adding property", Toast.LENGTH_SHORT).show()
+                    }
+
 
 
                 }
@@ -179,6 +197,7 @@ class CreatePropertyFragment : Fragment() {
         priceEditText: EditText?,
         supplierNameEditText: EditText?,
         phoneNumberEditText: EditText?,
+        spinnerTitle:Spinner,
         view: View
     ): Boolean {
         var isValid = true
@@ -230,7 +249,7 @@ class CreatePropertyFragment : Fragment() {
         }
 
         // Validate Spinner
-        val spinnerTitle = view.findViewById<Spinner>(R.id.spinnerTitle)
+        //val spinnerTitle = view.findViewById<Spinner>(R.id.spinnerTitle)
         val selectedTitlePosition = spinnerTitle.selectedItemPosition
         val selectedTitle = if (selectedTitlePosition != AdapterView.INVALID_POSITION) {
             spinnerTitle.adapter.getItem(selectedTitlePosition).toString()
