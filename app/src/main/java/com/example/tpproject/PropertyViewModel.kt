@@ -32,7 +32,7 @@ class PropertyViewModel(private val propertyRepository: PropertyRepository) : Vi
         return id;
     }
 
-    fun addUser(user: User) {
+    fun addUser(user: User):Long {
         return propertyRepository.addUser(user)
     }
 
@@ -46,6 +46,10 @@ class PropertyViewModel(private val propertyRepository: PropertyRepository) : Vi
 
     fun getPropertiesByUserId(userId: Long): List<Property> {
         return propertyRepository.getPropertiesByUserId(userId)
+    }
+
+    fun getUserByEmailAndPassword(email: String, password: String): User? {
+        return propertyRepository.getUserByEmailAndPassword(email, password)
     }
 
 }

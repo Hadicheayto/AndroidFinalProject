@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -20,9 +21,11 @@ import androidx.fragment.app.Fragment
 import com.example.tpproject.R
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.tpproject.PropertyViewModel
 import com.example.tpproject.data.Property
+import com.example.tpproject.data.UserManager
 import com.example.tpproject.utilities.InjectorUtils
 import com.google.android.material.textfield.TextInputLayout
 import java.time.LocalDate
@@ -48,16 +51,10 @@ class CreatePropertyFragment : Fragment() {
 
 
 
-    private lateinit var imageAddPhoto: ImageView
+
     var spinnerTitleResult = ""
 
-    private val pickImage =
-        registerForActivityResult(ActivityResultContracts.GetContent()) { result ->
-            if (result != null) {
-                imageAddPhoto.setImageURI(result)
-                // You can save the image URI or perform other operations here
-            }
-        }
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -101,8 +98,10 @@ class CreatePropertyFragment : Fragment() {
 
         // Set click listener to open the gallery
         imageAddPhoto.setOnClickListener {
-            openFilePicker()
+            val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            galleryActivityResultLauncher.launch(galleryIntent)
         }
+
 
 
 
@@ -140,7 +139,7 @@ class CreatePropertyFragment : Fragment() {
                         date = formattedDate,
                         id = 1,
                         image = "url",
-                        user_id = 20,
+                        user_id = UserManager.getUserId().toInt(),
                         supplier = supplierNameEditText?.text.toString(),
                         phonenumber = phoneNumberEditText?.text.toString().toInt()
                     )
@@ -184,12 +183,6 @@ class CreatePropertyFragment : Fragment() {
         return view
     }
 
-    private fun openFilePicker() {
-        val intent = Intent(Intent.ACTION_GET_CONTENT)
-        intent.type = "image/*"
-        intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true) // Ensure local content only
-        pickImage.launch(intent.toString())
-    }
 
     private fun validateForm(
         descriptionEditText: EditText?,
@@ -272,6 +265,18 @@ class CreatePropertyFragment : Fragment() {
 
         return isValid
     }
+
+    private val galleryActivityResultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == AppCompatActivity.RESULT_OK) {
+                // Handle the result when an image is selected from the gallery
+                val data: Intent? = result.data
+                val selectedImageUri = data?.data
+                // Now you can use the selectedImageUri as needed, such as displaying it in an ImageView
+                val imageView = view?.findViewById<ImageView>(R.id.imageAddPhoto)
+                imageView?.setImageURI(selectedImageUri)
+            }
+        }
 
 
     companion object {

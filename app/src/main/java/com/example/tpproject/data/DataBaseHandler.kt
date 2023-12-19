@@ -212,4 +212,25 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, DATABASE_NAM
         return properties
     }
 
+    fun getUserByEmailAndPassword(email: String, password: String): User? {
+        val db = readableDatabase
+        val cursor = db.rawQuery(
+            "SELECT * FROM $TABLE_USER WHERE $COL_EMAIL = ? AND $COL_PASSWORD = ?",
+            arrayOf(email, password)
+        )
+
+        return if (cursor.moveToFirst()) {
+            val id = cursor.getLong(cursor.getColumnIndexOrThrow(COL_ID))
+            val fname = cursor.getString(cursor.getColumnIndexOrThrow(COL_FNAME))
+            val lname = cursor.getString(cursor.getColumnIndexOrThrow(COL_LNAME))
+            val userEmail = cursor.getString(cursor.getColumnIndexOrThrow(COL_EMAIL))
+            val userPassword = cursor.getString(cursor.getColumnIndexOrThrow(COL_PASSWORD))
+            val active = cursor.getInt(cursor.getColumnIndexOrThrow(COL_Active))
+
+            User(id, fname, lname, userEmail, userPassword, active)
+        } else {
+            null
+        }
+    }
+
 }

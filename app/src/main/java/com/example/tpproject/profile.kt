@@ -19,6 +19,7 @@ import com.example.tpproject.data.User
 import com.example.tpproject.fragments.HomeFragment
 import com.example.tpproject.utilities.InjectorUtils
 import androidx.lifecycle.Observer
+import com.example.tpproject.data.UserManager
 
 class profile : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,7 +31,7 @@ class profile : AppCompatActivity() {
         val email = findViewById<EditText>(R.id.etEmailProfile)
         val password = findViewById<EditText>(R.id.etPasswordProfile)
         val btnSave = findViewById<Button>(R.id.btnSaveProfile)
-        val arrowBack = findViewById<ImageView>(R.id.ivArrowBack)
+        val arrowBack = findViewById<ImageView>(R.id.ivArrowBackProfile)
         val recycleViewProfile = findViewById<RecyclerView>(R.id.RvProfile)
 
         val factory = InjectorUtils.providePropertiesViewModelFactory(this)
@@ -38,7 +39,7 @@ class profile : AppCompatActivity() {
 
 
         val propertyList = mutableListOf<Property>()
-        val propertyArray = viewModel.getPropertiesByUserId(10);
+        val propertyArray = viewModel.getPropertiesByUserId(UserManager.getUserId());
         propertyList.addAll(propertyArray);
 //        viewModel.properties.observe(this, Observer { properties ->
 //            propertyList.clear()
@@ -57,7 +58,7 @@ class profile : AppCompatActivity() {
 
 
 
-        val userrr = viewModel.getUserById(1)
+        val userrr = viewModel.getUserById(UserManager.getUserId())
 
         fname.text = Editable.Factory.getInstance().newEditable(userrr?.fname)
         lname.text = Editable.Factory.getInstance().newEditable(userrr?.lname)
@@ -78,7 +79,7 @@ class profile : AppCompatActivity() {
         btnSave.setOnClickListener{
 
             val userInDb = viewModel.getUserById(1)
-            val editUser = User(1,fname.text.toString(),lname.text.toString(), email.text.toString(),password.text.toString(),0)
+            val editUser = User(UserManager.getUserId(),fname.text.toString(),lname.text.toString(), email.text.toString(),password.text.toString(),0)
 
             var valid = false;
             if (userInDb != null) {

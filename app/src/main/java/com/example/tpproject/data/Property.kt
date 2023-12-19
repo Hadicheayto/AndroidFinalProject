@@ -30,3 +30,17 @@ data class User(
     val active: Int
     // Add other user-related properties as needed
 )
+
+object UserManager {
+    private var userId: Long = -1 // Default value when no user is signed in
+
+    fun setUserId(id: Long) {
+        userId = id
+    }
+
+    fun getUserId(): Long {
+        return userId
+    }
+
+}
+

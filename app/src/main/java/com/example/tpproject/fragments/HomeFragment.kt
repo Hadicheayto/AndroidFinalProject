@@ -21,6 +21,9 @@ import com.example.tpproject.PropertyViewModel
 import com.example.tpproject.data.Property
 import com.example.tpproject.R
 import com.example.tpproject.RecycleViewAdapter
+import com.example.tpproject.RegisterActivity
+import com.example.tpproject.SignInActivity
+import com.example.tpproject.WelcomeScreenActivity
 import com.example.tpproject.profile
 import com.example.tpproject.property_details
 import com.example.tpproject.utilities.InjectorUtils
@@ -33,8 +36,12 @@ class HomeFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
     private val propertyList = mutableListOf<Property>()
+
     private lateinit var viewModel: PropertyViewModel
     private var filteredPropertyList: List<Property> = propertyList
+
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,6 +72,7 @@ class HomeFragment : Fragment() {
 
 
 
+
     }
 
     override fun onCreateView(
@@ -72,7 +80,13 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
+
+        val profileIcon = view?.findViewById<ImageView>(R.id.ivProfile)
+        val searchBar = view?.findViewById<EditText>(R.id.SearchBar)
+        val result = view?.findViewById<TextView>(R.id.tvResult)
+        val exploreProperty = view?.findViewById<TextView>(R.id.tvExplore)
         initializeUi()
+
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.setBackgroundColor(Color.TRANSPARENT)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -80,15 +94,15 @@ class HomeFragment : Fragment() {
             listItemClicked(selectedItem)
         }
 
-        val searchBar = view.findViewById<EditText>(R.id.SearchBar)
-        searchBar.addTextChangedListener(object : TextWatcher {
+
+        searchBar?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 // Not needed for this example
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 filterProperties(s.toString())
-                val result = view.findViewById<TextView>(R.id.tvResult)
+
                 result?.text = filteredPropertyList.size.toString() + " Result Found"
             }
 
@@ -97,11 +111,16 @@ class HomeFragment : Fragment() {
             }
         })
 
-
-        val profileIcon =view.findViewById<ImageView>(R.id.ivProfile)
-
-        profileIcon.setOnClickListener{
+        profileIcon?.setOnClickListener{
             val intent = Intent(requireContext(), profile::class.java)
+            startActivity(intent)
+        }
+
+        exploreProperty?.setOnClickListener{
+//            val intent = Intent(requireContext(), SignInActivity::class.java)
+//            startActivity(intent)
+
+            val intent = Intent(requireContext(), WelcomeScreenActivity::class.java)
             startActivity(intent)
         }
 

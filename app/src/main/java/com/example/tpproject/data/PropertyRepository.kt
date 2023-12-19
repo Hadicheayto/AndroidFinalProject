@@ -52,8 +52,8 @@ class PropertyRepository private constructor(private val dataBaseHandler: DataBa
     }
 
      //Add a method to insert a user
-    fun addUser(user: User)  {
-        dataBaseHandler.insertUser(user)
+    fun addUser(user: User) : Long  {
+        return dataBaseHandler.insertUser(user)
     }
 
      //Add a method to get a user by ID
@@ -67,6 +67,10 @@ class PropertyRepository private constructor(private val dataBaseHandler: DataBa
 
     fun getPropertiesByUserId(userId: Long): List<Property> {
         return dataBaseHandler.getPropertiesByUserId(userId)
+    }
+
+    fun getUserByEmailAndPassword(email: String, password: String): User? {
+        return dataBaseHandler.getUserByEmailAndPassword(email, password)
     }
 
     companion object {
