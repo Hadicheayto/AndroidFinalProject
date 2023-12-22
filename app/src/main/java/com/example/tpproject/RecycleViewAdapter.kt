@@ -1,13 +1,19 @@
 package com.example.tpproject
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.util.Base64
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tpproject.data.Property
+import com.bumptech.glide.Glide
 
 class RecycleViewAdapter(
     private val propertyList:List<Property>,
@@ -50,11 +56,15 @@ class MyViewHolder(val view:View): RecyclerView.ViewHolder(view){
     val btn = view.findViewById<Button>(R.id.btnNext)
     val date = view.findViewById<TextView>(R.id.tvDate)
 
+
     fun Bind(property: Property, clickListener:(Property) -> Unit){
         title.text = property.title
         location.text = property.location
         price.text = property.price.toString()
         date.text = property.date
+
+        img.setImageURI(property.image.toUri())
+
 
         btn. setOnClickListener{
             clickListener(property)

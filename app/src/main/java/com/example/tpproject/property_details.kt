@@ -4,12 +4,13 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.net.toUri
 
 class property_details : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_property_details)
-        val imgUrl = intent.getIntExtra("imgUrl",0)
+        val imgUrl = intent.getStringExtra("imgUrl")
         val title = intent.getStringExtra("title")
         val description = intent.getStringExtra("description")
         val price = intent.getLongExtra("price", 0)
@@ -25,7 +26,9 @@ class property_details : AppCompatActivity() {
         val supplierName = findViewById<TextView>(R.id.Supplier_details)
         val phoneNumberName = findViewById<TextView>(R.id.PhoneNumber_details)
 
-        imgUrlName.setImageResource(imgUrl)
+        if (imgUrl != null) {
+            imgUrlName.setImageURI(imgUrl.toUri())
+        }
         titleName.text = title
         descriptionName.text = description
         priceName.text = price.toString()

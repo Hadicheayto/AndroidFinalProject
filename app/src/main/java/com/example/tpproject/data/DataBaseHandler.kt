@@ -233,4 +233,9 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, DATABASE_NAM
         }
     }
 
+    fun deleteAllProperties(): Int {
+        val db = writableDatabase
+        return db.delete(TABLE_NAME, null, null)
+    }
+
 }

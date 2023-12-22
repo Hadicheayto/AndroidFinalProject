@@ -3,6 +3,7 @@ package com.example.tpproject
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -36,7 +37,9 @@ class SignInActivity : AppCompatActivity() {
 
             if(validateForm(email,password))
             {
-                val user = viewModel.getUserByEmailAndPassword(email.text.toString(),password.text.toString())
+
+
+                val user = viewModel.getUserByEmailAndPassword(email.text.toString().lowercase(),password.text.toString())
 
                 if (user != null)
                 {

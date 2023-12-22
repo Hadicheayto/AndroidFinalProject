@@ -73,6 +73,10 @@ class PropertyRepository private constructor(private val dataBaseHandler: DataBa
         return dataBaseHandler.getUserByEmailAndPassword(email, password)
     }
 
+    fun deleteAllProperties(): Int {
+        return dataBaseHandler.deleteAllProperties()
+    }
+
     companion object {
         @Volatile
         private var instance: PropertyRepository? = null

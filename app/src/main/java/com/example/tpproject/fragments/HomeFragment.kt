@@ -60,19 +60,17 @@ class HomeFragment : Fragment() {
         val factory = InjectorUtils.providePropertiesViewModelFactory(requireContext())
         viewModel = ViewModelProvider(this, factory).get(PropertyViewModel::class.java)
 
+        //viewModel.deleteAllProperties()
+
         viewModel.properties.observe(viewLifecycleOwner, Observer { properties ->
             propertyList.clear()
             propertyList.addAll(properties)
+            propertyList.reverse()
             Log.e("msg:","msg:${properties}")
             updateRecyclerView()
             val result = view?.findViewById<TextView>(R.id.tvResult)
             result?.text = properties.size.toString() + " Result Found"
         })
-
-
-
-
-
     }
 
     override fun onCreateView(

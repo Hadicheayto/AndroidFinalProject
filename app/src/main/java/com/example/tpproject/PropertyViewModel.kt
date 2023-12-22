@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.tpproject.data.Property
 import com.example.tpproject.data.PropertyRepository
+import com.example.tpproject.data.TABLE_NAME
 import com.example.tpproject.data.User
 
 //class PropertyViewModel(private val propertyRepository: PropertyRepository) : ViewModel() {
@@ -50,6 +51,10 @@ class PropertyViewModel(private val propertyRepository: PropertyRepository) : Vi
 
     fun getUserByEmailAndPassword(email: String, password: String): User? {
         return propertyRepository.getUserByEmailAndPassword(email, password)
+    }
+
+    fun deleteAllProperties(): Int {
+        return  propertyRepository.deleteAllProperties()
     }
 
 }

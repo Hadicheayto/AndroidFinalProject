@@ -13,6 +13,9 @@ import com.example.tpproject.data.User
 import com.example.tpproject.utilities.InjectorUtils
 import com.google.android.material.textfield.TextInputLayout
 
+
+
+
 class RegisterActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +42,7 @@ class RegisterActivity : AppCompatActivity() {
 
                 if(validateForm(fname,lname,email,password))
                 {
+
                     val user = User(1,fname.text.toString(),lname.text.toString(),email.text.toString(),password.text.toString(),0)
 
                     val insertUser = viewModel.addUser(user)
@@ -106,11 +110,20 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         val passwordContainer = findViewById<TextInputLayout>(R.id.passwordContainer)
-        if (password?.text.toString().trim().isEmpty()) {
-            passwordContainer.error = "lname is required"
+        val passwordText = password?.text.toString().trim()
+        if (passwordText.isEmpty()) {
+            passwordContainer.error = "Password is required"
             isValid = false
         } else {
-            passwordContainer.error = null
+            // Password validation criteria
+            val passwordRegex = "^(?=.*[A-Z])(?=.*[!@#\$%^&*(),.?\":{}|<>])(.{6,})$"
+            if (!passwordText.matches(passwordRegex.toRegex())) {
+                passwordContainer.error =
+                    "Password must contain at least 1 uppercase letter, 1 symbol, and be at least 6 characters long"
+                isValid = false
+            } else {
+                passwordContainer.error = null
+            }
         }
 
         return isValid;

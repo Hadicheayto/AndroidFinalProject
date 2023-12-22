@@ -4,6 +4,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="steelBlue"> #4682B4</color>
     <color name="violet"> #5F2879</color>
+    <color name="grey"> #808080</color>
 
 
 </resources>
