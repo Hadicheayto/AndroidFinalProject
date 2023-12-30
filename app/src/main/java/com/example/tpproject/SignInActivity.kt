@@ -38,8 +38,11 @@ class SignInActivity : AppCompatActivity() {
             if(validateForm(email,password))
             {
 
+                Log.e("SignInActivity", "Email: ${email.text}, Password: ${password.text}")
 
                 val user = viewModel.getUserByEmailAndPassword(email.text.toString().lowercase(),password.text.toString())
+
+                Log.e("SignInActivity", "user:: ${user}")
 
                 if (user != null)
                 {

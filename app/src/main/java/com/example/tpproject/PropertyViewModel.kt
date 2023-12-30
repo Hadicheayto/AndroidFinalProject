@@ -57,4 +57,12 @@ class PropertyViewModel(private val propertyRepository: PropertyRepository) : Vi
         return  propertyRepository.deleteAllProperties()
     }
 
+    fun deleteAllUsers(): Int {
+        return  propertyRepository.deleteAllProperties()
+    }
+
+    fun deletePropertyById(propertyId: Long): Int {
+        return propertyRepository.deletePropertyById(propertyId)
+    }
+
 }

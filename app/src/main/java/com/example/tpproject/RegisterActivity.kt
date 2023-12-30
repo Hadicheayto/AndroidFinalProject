@@ -43,7 +43,17 @@ class RegisterActivity : AppCompatActivity() {
                 if(validateForm(fname,lname,email,password))
                 {
 
-                    val user = User(1,fname.text.toString(),lname.text.toString(),email.text.toString(),password.text.toString(),0)
+                    val checkIfExist = viewModel.getUserByEmailAndPassword(email.text.toString(),password.text.toString())
+
+                    if(checkIfExist != null)
+                    {
+                        Toast.makeText(this, "account with same email and password exist", Toast.LENGTH_SHORT).show()
+                        email.setText("")
+                        password.setText("")
+                        return@setOnClickListener
+                    }
+
+                    val user = User(1,fname.text.toString(),lname.text.toString(),email.text.toString(),password.text.toString(),"empty",0)
 
                     val insertUser = viewModel.addUser(user)
 

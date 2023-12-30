@@ -6,6 +6,7 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
 
 
 val DATABASE_NAME = "MyDB"
@@ -30,7 +31,7 @@ val COL_EMAIL = "email"
 val COL_PASSWORD = "password"
 
 
-class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,null,8)
+class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,null,9)
 {
     override fun onCreate(p0: SQLiteDatabase?) {
 
@@ -77,15 +78,16 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, DATABASE_NAM
                 "$COL_LNAME VARCHAR(256)," +
                 "$COL_EMAIL VARCHAR(256)," +
                 "$COL_PASSWORD VARCHAR(256)," +
+                "$COL_IMAGEURL VARCHAR(256)," +  // Add this line for the new column
                 "$COL_Active INTEGER," +
                 "CONSTRAINT fk_user_active FOREIGN KEY($COL_Active) REFERENCES $TABLE_NAME($COL_USERID))";
 
-        p0?.execSQL(CREATE_TABLE)
+        //p0?.execSQL(CREATE_TABLE)
         p0?.execSQL(CREATE_TABLE_USER)
     }
 
     override fun onUpgrade(p0: SQLiteDatabase?, p1: Int, p2: Int) {
-        p0?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME")
+        //p0?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME")
         p0?.execSQL("DROP TABLE IF EXISTS $TABLE_USER")
         onCreate(p0)
     }
@@ -143,6 +145,7 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, DATABASE_NAM
             put(COL_FNAME, user.fname)
             put(COL_LNAME, user.lname)
             put(COL_EMAIL, user.email)
+            put(COL_IMAGEURL, user.image)
             put(COL_PASSWORD, user.password)
             put(COL_Active, user.active)
         }
@@ -159,9 +162,10 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, DATABASE_NAM
             val lname = cursor.getString(cursor.getColumnIndexOrThrow(COL_LNAME))
             val email = cursor.getString(cursor.getColumnIndexOrThrow(COL_EMAIL))
             val password = cursor.getString(cursor.getColumnIndexOrThrow(COL_PASSWORD))
+            val image = cursor.getString(cursor.getColumnIndexOrThrow(COL_IMAGEURL))
             val active = cursor.getInt(cursor.getColumnIndexOrThrow(COL_Active))
 
-            User(id,fname,lname,email,password,active)
+            User(id,fname,lname,email,password,image,active)
         } else {
             null
         }
@@ -175,6 +179,7 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, DATABASE_NAM
             put(COL_EMAIL, user.email)
             put(COL_PASSWORD, user.password)
             put(COL_Active, user.active)
+            put(COL_IMAGEURL, user.image)
         }
 
         return db.update(
@@ -213,11 +218,16 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, DATABASE_NAM
     }
 
     fun getUserByEmailAndPassword(email: String, password: String): User? {
+
         val db = readableDatabase
         val cursor = db.rawQuery(
             "SELECT * FROM $TABLE_USER WHERE $COL_EMAIL = ? AND $COL_PASSWORD = ?",
             arrayOf(email, password)
         )
+
+        val imageurlIndex = cursor.getColumnIndex(COL_IMAGEURL)
+        Log.e("Database", "COL_IMAGEURL index: $imageurlIndex")
+
 
         return if (cursor.moveToFirst()) {
             val id = cursor.getLong(cursor.getColumnIndexOrThrow(COL_ID))
@@ -225,9 +235,19 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, DATABASE_NAM
             val lname = cursor.getString(cursor.getColumnIndexOrThrow(COL_LNAME))
             val userEmail = cursor.getString(cursor.getColumnIndexOrThrow(COL_EMAIL))
             val userPassword = cursor.getString(cursor.getColumnIndexOrThrow(COL_PASSWORD))
+            val imageurl = cursor.getString(cursor.getColumnIndexOrThrow(COL_IMAGEURL))
             val active = cursor.getInt(cursor.getColumnIndexOrThrow(COL_Active))
 
-            User(id, fname, lname, userEmail, userPassword, active)
+            Log.e("Database", "COL_IMAGEURL index: $id")
+            Log.e("Database", "COL_IMAGEURL index: $fname")
+            Log.e("Database", "COL_IMAGEURL index: $lname")
+            Log.e("Database", "COL_IMAGEURL index: $userEmail")
+            Log.e("Database", "COL_IMAGEURL index: $userPassword")
+            Log.e("Database", "COL_IMAGEURL index: $imageurl")
+            Log.e("Database", "COL_IMAGEURL index: $active")
+
+
+            User(id, fname, lname, userEmail, userPassword,imageurl ,active)
         } else {
             null
         }
@@ -236,6 +256,16 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, DATABASE_NAM
     fun deleteAllProperties(): Int {
         val db = writableDatabase
         return db.delete(TABLE_NAME, null, null)
+    }
+
+    fun deleteAllUsers(): Int {
+        val db = writableDatabase
+        return db.delete(TABLE_USER, null, null)
+    }
+
+    fun deletePropertyById(propertyId: Long): Int {
+        val db = writableDatabase
+        return db.delete(TABLE_NAME, "$COL_ID=?", arrayOf(propertyId.toString()))
     }
 
 }

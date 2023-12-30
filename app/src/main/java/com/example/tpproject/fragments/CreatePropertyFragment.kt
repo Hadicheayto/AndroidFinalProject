@@ -23,6 +23,7 @@ import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
@@ -62,18 +63,11 @@ class CreatePropertyFragment : Fragment() {
 
 
 
-
-
-
     var spinnerTitleResult = ""
     private lateinit var imageAddPhoto: ImageView
     var imageUrl = "";
     private  lateinit var errorText: TextView
-
-
-
-
-
+    private lateinit var pickImage: ActivityResultLauncher<Intent>
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -113,6 +107,33 @@ class CreatePropertyFragment : Fragment() {
                 // Handle the case where nothing is selected (optional)
             }
         })
+
+        pickImage = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data: Intent? = result.data
+                val selectedImageUri: Uri? = data?.data
+                // Handle the selected image URI here
+                try {
+                    val bitmap =
+                        BitmapFactory.decodeStream(requireContext().contentResolver.openInputStream(selectedImageUri!!))
+                    // Set the bitmap to your ImageView or perform any other actions
+                    imageAddPhoto.setImageBitmap(bitmap)
+
+                    Log.e("Response", "the user is: $bitmap")
+
+                    val imagePath = Functions.saveImageToExternalStorage(requireContext(), bitmap)
+
+                    imageUrl = imagePath
+
+                    if (imageUrl != "") {
+                        errorText.setText("")
+                    }
+
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+            }
+        }
 
 
 
@@ -196,33 +217,33 @@ class CreatePropertyFragment : Fragment() {
         pickImage.launch(intent)
     }
 
-    private val pickImage = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val data: Intent? = result.data
-            val selectedImageUri: Uri? = data?.data
-            // Handle the selected image URI here
-            try {
-                val bitmap = BitmapFactory.decodeStream(requireContext().contentResolver.openInputStream(selectedImageUri!!))
-                // Set the bitmap to your ImageView or perform any other actions
-                imageAddPhoto.setImageBitmap(bitmap)
-
-                Log.e("Response", "the user is: $bitmap")
-
-                val imagePath = Functions.saveImageToExternalStorage(requireContext(),bitmap)
-
-                imageUrl = imagePath
-
-                if(imageUrl != "")
-                {
-                    errorText.setText("")
-                }
-
-
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-        }
-    }
+//    private val pickImage = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+//        if (result.resultCode == Activity.RESULT_OK) {
+//            val data: Intent? = result.data
+//            val selectedImageUri: Uri? = data?.data
+//            // Handle the selected image URI here
+//            try {
+//                val bitmap = BitmapFactory.decodeStream(requireContext().contentResolver.openInputStream(selectedImageUri!!))
+//                // Set the bitmap to your ImageView or perform any other actions
+//                imageAddPhoto.setImageBitmap(bitmap)
+//
+//                Log.e("Response", "the user is: $bitmap")
+//
+//                val imagePath = Functions.saveImageToExternalStorage(requireContext(),bitmap)
+//
+//                imageUrl = imagePath
+//
+//                if(imageUrl != "")
+//                {
+//                    errorText.setText("")
+//                }
+//
+//
+//            } catch (e: IOException) {
+//                e.printStackTrace()
+//            }
+//        }
+//    }
 
 
 

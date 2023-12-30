@@ -27,6 +27,7 @@ data class User(
     val lname: String,
     val email: String,
     val password: String,
+    val image: String,
     val active: Int
     // Add other user-related properties as needed
 )

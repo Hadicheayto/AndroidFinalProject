@@ -185,16 +185,14 @@
 
         <ImageView
             android:id="@+id/imageAddPhoto"
-            android:layout_width="250dp"
-            android:layout_height="120dp"
-            android:layout_marginTop="4dp"
+            android:layout_width="237dp"
+            android:layout_height="115dp"
+            android:layout_marginTop="20dp"
             android:background="@drawable/border_spinner"
-            android:backgroundTint="@color/violet"
             android:padding="5dp"
             android:scaleType="fitXY"
             android:src="@drawable/addphotoicon"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.496"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -21,9 +22,9 @@ import com.example.tpproject.PropertyViewModel
 import com.example.tpproject.data.Property
 import com.example.tpproject.R
 import com.example.tpproject.RecycleViewAdapter
-import com.example.tpproject.RegisterActivity
-import com.example.tpproject.SignInActivity
 import com.example.tpproject.WelcomeScreenActivity
+import com.example.tpproject.data.User
+import com.example.tpproject.data.UserManager
 import com.example.tpproject.profile
 import com.example.tpproject.property_details
 import com.example.tpproject.utilities.InjectorUtils
@@ -39,6 +40,8 @@ class HomeFragment : Fragment() {
 
     private lateinit var viewModel: PropertyViewModel
     private var filteredPropertyList: List<Property> = propertyList
+    private lateinit var currentUser: User
+
 
 
 
@@ -71,6 +74,11 @@ class HomeFragment : Fragment() {
             val result = view?.findViewById<TextView>(R.id.tvResult)
             result?.text = properties.size.toString() + " Result Found"
         })
+
+        val user = viewModel.getUserById(UserManager.getUserId())
+        if (user != null) {
+            currentUser = user
+        }
     }
 
     override fun onCreateView(
@@ -114,6 +122,15 @@ class HomeFragment : Fragment() {
             startActivity(intent)
         }
 
+        if(currentUser.image != "empty" && currentUser.image != "")
+        {
+            if (profileIcon != null) {
+                profileIcon.setImageURI(currentUser.image.toUri())
+            }
+        }
+
+
+
         exploreProperty?.setOnClickListener{
 //            val intent = Intent(requireContext(), SignInActivity::class.java)
 //            startActivity(intent)
@@ -146,7 +163,7 @@ class HomeFragment : Fragment() {
 
     private fun listItemClicked(property: Property) {
         val intent = Intent(requireContext(), property_details::class.java)
-        intent.putExtra("supplier", "hadi")
+        intent.putExtra("supplier", property.supplier)
         intent.putExtra("phoneNumber", property.phonenumber)
         intent.putExtra("imgUrl", property.image)
         intent.putExtra("title", property.title)

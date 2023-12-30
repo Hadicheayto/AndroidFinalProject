@@ -77,6 +77,15 @@ class PropertyRepository private constructor(private val dataBaseHandler: DataBa
         return dataBaseHandler.deleteAllProperties()
     }
 
+    fun deleteAllUsers(): Int {
+        return dataBaseHandler.deleteAllUsers()
+    }
+
+    fun deletePropertyById(propertyId: Long): Int {
+
+        return dataBaseHandler.deletePropertyById(propertyId)
+    }
+
     companion object {
         @Volatile
         private var instance: PropertyRepository? = null

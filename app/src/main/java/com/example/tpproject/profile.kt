@@ -15,6 +15,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -42,41 +43,35 @@ class profile : AppCompatActivity() {
         val password = findViewById<EditText>(R.id.etPasswordProfile)
         val btnSave = findViewById<Button>(R.id.btnSaveProfile)
         val arrowBack = findViewById<ImageView>(R.id.ivArrowBackProfile)
-        val recycleViewProfile = findViewById<RecyclerView>(R.id.RvProfile)
+        val btnDeleteImage = findViewById<Button>(R.id.btnDeleteImgg)
 
         val factory = InjectorUtils.providePropertiesViewModelFactory(this)
         val viewModel = ViewModelProvider(this, factory).get(PropertyViewModel::class.java)
 
 
-        val propertyList = mutableListOf<Property>()
-        val propertyArray = viewModel.getPropertiesByUserId(UserManager.getUserId());
-        propertyList.addAll(propertyArray);
-//        viewModel.properties.observe(this, Observer { properties ->
-//            propertyList.clear()
-//            propertyList.addAll(properties)
-//            Log.e("msg:","msg:${properties}")
-//            // updateRecyclerView()
-//            // val result = view?.findViewById<TextView>(R.id.tvResult)
-//            // result?.text = properties.size.toString() + " Result Found"
-//        })
-
-        recycleViewProfile.setBackgroundColor(Color.TRANSPARENT)
-        recycleViewProfile.layoutManager = LinearLayoutManager(this)
-        recycleViewProfile.adapter = RecycleViewAdapter(propertyList) { selectedItem: Property ->
-            listItemClicked(selectedItem)
-        }
 
         imageAddPhoto.setOnClickListener{
-
             pickImageFromGallery()
+        }
 
-
+        btnDeleteImage.setOnClickListener{
+            imageAddPhoto.setImageResource(R.drawable.addphotoicon)
+            imageUrl = "empty"
         }
 
 
 
         val userrr = viewModel.getUserById(UserManager.getUserId())
+        if (userrr != null) {
+            imageUrl = userrr.image
+        }
 
+        if (userrr != null) {
+            if (userrr.image != "empty" && userrr.image != "")
+            {
+                imageAddPhoto.setImageURI(userrr.image.toUri())
+            }
+        }
         fname.text = Editable.Factory.getInstance().newEditable(userrr?.fname)
         lname.text = Editable.Factory.getInstance().newEditable(userrr?.lname)
         email.text = Editable.Factory.getInstance().newEditable(userrr?.email)
@@ -96,13 +91,31 @@ class profile : AppCompatActivity() {
         btnSave.setOnClickListener{
 
             val userInDb = viewModel.getUserById(UserManager.getUserId())
-            val editUser = User(UserManager.getUserId(),fname.text.toString(),lname.text.toString(), email.text.toString(),password.text.toString(),0)
+            val editUser = User(UserManager.getUserId(),fname.text.toString(),lname.text.toString(), email.text.toString(),password.text.toString(),imageUrl,0)
+
+            if (userInDb != null) {
+                Log.e("Response", "userindb: ${userInDb.image}")
+            }
+            Log.e("Response", "edituser: ${editUser.image}")
+
+            if(editUser.fname == "")
+            {
+                Log.e("Response", "user empty")
+            }else
+            {
+                Log.e("Response", "user is not empty")
+            }
 
             var valid = false;
             if (userInDb != null) {
-                if(userInDb.fname == editUser.fname && userInDb.lname == editUser.lname && userInDb.email == editUser.email && userInDb.password == editUser.password)
-                {
-                    valid = true;
+
+                if (editUser.fname == "" || editUser.lname == "" || editUser.email == "" || editUser.password == "") {
+                    valid = true
+                } else {
+                    // Check if editUser is the same as userInDb
+                    if (editUser.fname == userInDb.fname && editUser.lname == userInDb.lname && editUser.email == userInDb.email && editUser.password == userInDb.password && editUser.image == userInDb.image) {
+                        valid = true
+                    }
                 }
 
                 if(valid)

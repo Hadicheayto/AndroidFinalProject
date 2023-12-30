@@ -21,6 +21,7 @@ class WelcomeScreenActivity : AppCompatActivity() {
 //            val factory = InjectorUtils.providePropertiesViewModelFactory(this)
 //            viewModel = ViewModelProvider(this, factory).get(PropertyViewModel::class.java)
 //
+//            viewModel.deleteAllUsers()
 //            viewModel.deleteAllProperties()
 
 

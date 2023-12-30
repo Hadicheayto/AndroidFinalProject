@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide
 
 class RecycleViewAdapter(
     private val propertyList:List<Property>,
+    private val isDeletable: Boolean = false,
     private val clickListener:(Property) -> Unit
 ) : RecyclerView.Adapter<MyViewHolder>(){
 
@@ -25,7 +26,7 @@ class RecycleViewAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         val listItem = layoutInflater.inflate(R.layout.list_item,parent,false)
-        return MyViewHolder(listItem)
+        return MyViewHolder(listItem,isDeletable)
     }
 
     override fun getItemCount(): Int {
@@ -47,7 +48,8 @@ class RecycleViewAdapter(
 
 }
 
-class MyViewHolder(val view:View): RecyclerView.ViewHolder(view){
+class MyViewHolder(val view:View, private val isDeletable: Boolean): RecyclerView.ViewHolder(view){
+
 
     val title = view.findViewById<TextView>(R.id.tvTitle)
     val location  = view.findViewById<TextView>(R.id.tvLocation)
@@ -64,6 +66,8 @@ class MyViewHolder(val view:View): RecyclerView.ViewHolder(view){
         date.text = property.date
 
         img.setImageURI(property.image.toUri())
+
+        btn.text = if (isDeletable) "Delete" else "->"
 
 
         btn. setOnClickListener{

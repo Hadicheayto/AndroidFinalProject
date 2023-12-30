@@ -9,8 +9,14 @@
 
     <item
         android:id="@+id/ic_add"
-        android:icon="@drawable/newsicon"
+        android:icon="@drawable/add_property_icon"
         android:title="Add"
+        />
+
+    <item
+        android:id="@+id/ic_myProperty"
+        android:icon="@drawable/my_properties_icon"
+        android:title="My Properties"
         />
 
     <item
