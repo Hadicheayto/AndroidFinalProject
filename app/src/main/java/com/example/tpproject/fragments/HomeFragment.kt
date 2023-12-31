@@ -18,6 +18,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.tpproject.InterestActivity
 import com.example.tpproject.PropertyViewModel
 import com.example.tpproject.data.Property
 import com.example.tpproject.R
@@ -135,7 +136,7 @@ class HomeFragment : Fragment() {
 //            val intent = Intent(requireContext(), SignInActivity::class.java)
 //            startActivity(intent)
 
-            val intent = Intent(requireContext(), WelcomeScreenActivity::class.java)
+            val intent = Intent(requireContext(), InterestActivity::class.java)
             startActivity(intent)
         }
 

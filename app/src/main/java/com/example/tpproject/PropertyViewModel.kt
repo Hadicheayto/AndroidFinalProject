@@ -4,8 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.tpproject.data.Property
-import com.example.tpproject.data.PropertyRepository
-import com.example.tpproject.data.TABLE_NAME
+import com.example.tpproject.data.Repository
 import com.example.tpproject.data.User
 
 //class PropertyViewModel(private val propertyRepository: PropertyRepository) : ViewModel() {
@@ -17,52 +16,52 @@ import com.example.tpproject.data.User
 //
 //}
 
-class PropertyViewModel(private val propertyRepository: PropertyRepository) : ViewModel() {
+class PropertyViewModel(private val repository: Repository) : ViewModel() {
 
     private val _properties = MutableLiveData<List<Property>>()
     val properties: LiveData<List<Property>>
         get() = _properties
 
     init {
-        _properties.value = propertyRepository.getProperties().value
+        _properties.value = repository.getProperties().value
     }
 
     fun addProperty(property: Property): Long {
-        val id = propertyRepository.addProperty(property)
-        _properties.value = propertyRepository.getProperties().value
+        val id = repository.addProperty(property)
+        _properties.value = repository.getProperties().value
         return id;
     }
 
     fun addUser(user: User):Long {
-        return propertyRepository.addUser(user)
+        return repository.addUser(user)
     }
 
     fun getUserById(userId: Long): User? {
-        return propertyRepository.getUserById(userId)
+        return repository.getUserById(userId)
     }
 
     fun editUser(user: User): Int {
-        return propertyRepository.editUser(user)
+        return repository.editUser(user)
     }
 
     fun getPropertiesByUserId(userId: Long): List<Property> {
-        return propertyRepository.getPropertiesByUserId(userId)
+        return repository.getPropertiesByUserId(userId)
     }
 
     fun getUserByEmailAndPassword(email: String, password: String): User? {
-        return propertyRepository.getUserByEmailAndPassword(email, password)
+        return repository.getUserByEmailAndPassword(email, password)
     }
 
     fun deleteAllProperties(): Int {
-        return  propertyRepository.deleteAllProperties()
+        return  repository.deleteAllProperties()
     }
 
     fun deleteAllUsers(): Int {
-        return  propertyRepository.deleteAllProperties()
+        return  repository.deleteAllProperties()
     }
 
     fun deletePropertyById(propertyId: Long): Int {
-        return propertyRepository.deletePropertyById(propertyId)
+        return repository.deletePropertyById(propertyId)
     }
 
 }

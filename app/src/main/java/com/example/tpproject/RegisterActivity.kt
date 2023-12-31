@@ -71,10 +71,8 @@ class RegisterActivity : AppCompatActivity() {
                 {
                     Toast.makeText(this, "error registration", Toast.LENGTH_SHORT).show()
                 }
-
             }
         }
-
     }
 
     private fun validateForm(

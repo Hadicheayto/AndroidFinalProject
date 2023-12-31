@@ -30,33 +30,18 @@ val COL_LNAME = "lname"
 val COL_EMAIL = "email"
 val COL_PASSWORD = "password"
 
+val TABLE_PREFERENCE = "preference"
+val COL_TYPE = "type"
+val COL_BUDGET = "budget"
+val COL_CAPACITY = "capacity"
 
-class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,null,9)
+
+
+
+
+class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME,null,10)
 {
     override fun onCreate(p0: SQLiteDatabase?) {
-
-//        val CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " (" +
-//                COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-//                COL_USERID + " INTEGER," +
-//                COL_Price + " LONG," +
-//                COL_Location + " VARCHAR(256)," +
-//                COL_TITLE + " VARCHAR(256)," +
-//                COL_DESCRIPTION + " VARCHAR(256)," +
-//                COL_IMAGEURL + " VARCHAR(256)," +
-//                COL_Active + " INTEGER," +
-//                COL_SUPPLIER + " VARCHAR(256)," +
-//                COL_PHONENUMBER + " INTEGER," +
-//                COL_DATE + " VARCHAR(256))";
-//
-//        val CREATE_TABLE_USER = "CREATE TABLE " + TABLE_USER + " (" +
-//                COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-//                COL_FNAME + " VARCHAR(256)," +
-//                COL_LNAME + "  VARCHAR(256)," +
-//                COL_EMAIL + "  VARCHAR(256)," +
-//                COL_PASSWORD + "  VARCHAR(256),"+
-//                COL_Active + " INTEGER)";
-
-        p0?.execSQL("PRAGMA foreign_keys=ON;")
 
         val CREATE_TABLE = "CREATE TABLE $TABLE_NAME (" +
                 "$COL_ID INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -82,13 +67,24 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, DATABASE_NAM
                 "$COL_Active INTEGER," +
                 "CONSTRAINT fk_user_active FOREIGN KEY($COL_Active) REFERENCES $TABLE_NAME($COL_USERID))";
 
+        val CREATE_TABLE_PREFERENCE = "CREATE TABLE $TABLE_PREFERENCE (" +
+                "$COL_ID INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "$COL_USERID INTEGER," +
+                "$COL_TYPE TEXT," +
+                "$COL_Location TEXT," +
+                "$COL_BUDGET TEXT," +
+                "$COL_CAPACITY TEXT," +
+                "FOREIGN KEY($COL_USERID) REFERENCES $TABLE_USER($COL_ID))"
+
         //p0?.execSQL(CREATE_TABLE)
-        p0?.execSQL(CREATE_TABLE_USER)
+        //p0?.execSQL(CREATE_TABLE_USER)
+        p0?.execSQL(CREATE_TABLE_PREFERENCE)
     }
 
     override fun onUpgrade(p0: SQLiteDatabase?, p1: Int, p2: Int) {
         //p0?.execSQL("DROP TABLE IF EXISTS $TABLE_NAME")
-        p0?.execSQL("DROP TABLE IF EXISTS $TABLE_USER")
+        //p0?.execSQL("DROP TABLE IF EXISTS $TABLE_USER")
+        p0?.execSQL("DROP TABLE IF EXISTS $TABLE_PREFERENCE")
         onCreate(p0)
     }
 
@@ -266,6 +262,39 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, DATABASE_NAM
     fun deletePropertyById(propertyId: Long): Int {
         val db = writableDatabase
         return db.delete(TABLE_NAME, "$COL_ID=?", arrayOf(propertyId.toString()))
+    }
+
+    fun insertPreference(preference: Preference): Long {
+        val db = writableDatabase
+        val values = ContentValues().apply {
+            put(COL_USERID, preference.userId)
+            put(COL_TYPE, preference.type)
+            put(COL_Location, preference.location)
+            put(COL_BUDGET, preference.budget)
+            put(COL_CAPACITY, preference.capacity)
+        }
+        return db.insert(TABLE_PREFERENCE, null, values)
+    }
+
+    fun getPreferencesByUserId(userId: Long): List<Preference> {
+        val preferences = mutableListOf<Preference>()
+        val db = readableDatabase
+        val cursor = db.rawQuery("SELECT * FROM $TABLE_PREFERENCE WHERE $COL_USERID = ?", arrayOf(userId.toString()))
+
+        with(cursor) {
+            while (moveToNext()) {
+                val id = getLong(getColumnIndexOrThrow(COL_ID))
+                val type = getString(getColumnIndexOrThrow(COL_TYPE))
+                val location = getString(getColumnIndexOrThrow(COL_Location))
+                val budget = getString(getColumnIndexOrThrow(COL_BUDGET))
+                val capacity = getString(getColumnIndexOrThrow(COL_CAPACITY))
+
+                preferences.add(Preference(id, userId, type, location, budget, capacity))
+            }
+            close()
+        }
+
+        return preferences
     }
 
 }

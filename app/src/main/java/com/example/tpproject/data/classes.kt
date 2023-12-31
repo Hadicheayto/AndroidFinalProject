@@ -1,7 +1,5 @@
 package com.example.tpproject.data
 
-import android.text.Editable
-
 //data class Property(val supplier:String, val phoneNumber:Int,val title:String,val description:String,val location:String,val price:Int,val image:Int){
 //
 //}
@@ -30,6 +28,15 @@ data class User(
     val image: String,
     val active: Int
     // Add other user-related properties as needed
+)
+
+data class Preference(
+    val id: Long,
+    val userId: Long,
+    val type: String,
+    val location: String,
+    val budget: String,
+    val capacity: String,
 )
 
 object UserManager {

@@ -1,10 +1,9 @@
 package com.example.tpproject.utilities
 
 import android.content.Context
-import com.example.tpproject.PropertyViewModel
 import com.example.tpproject.PropertyViewModelFactory
 import com.example.tpproject.data.DataBaseHandler
-import com.example.tpproject.data.PropertyRepository
+import com.example.tpproject.data.Repository
 
 
 //object InjectorUtils {
@@ -28,7 +27,7 @@ object InjectorUtils {
 
     fun providePropertiesViewModelFactory(context: Context): PropertyViewModelFactory {
         val dataBaseHandler = DataBaseHandler(context)
-        val propertyRepository = PropertyRepository.getInstance(dataBaseHandler)
-        return PropertyViewModelFactory(propertyRepository)
+        val repository = Repository.getInstance(dataBaseHandler)
+        return PropertyViewModelFactory(repository)
     }
 }

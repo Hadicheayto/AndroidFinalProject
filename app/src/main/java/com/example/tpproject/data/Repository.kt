@@ -41,7 +41,7 @@ import androidx.lifecycle.MutableLiveData
 //    }
 //}
 
-class PropertyRepository private constructor(private val dataBaseHandler: DataBaseHandler) {
+class Repository private constructor(private val dataBaseHandler: DataBaseHandler) {
 
     fun addProperty(property: Property): Long {
         return dataBaseHandler.insertProperties(property)
@@ -88,11 +88,11 @@ class PropertyRepository private constructor(private val dataBaseHandler: DataBa
 
     companion object {
         @Volatile
-        private var instance: PropertyRepository? = null
+        private var instance: Repository? = null
 
         fun getInstance(dataBaseHandler: DataBaseHandler) =
             instance ?: synchronized(this) {
-                instance ?: PropertyRepository(dataBaseHandler).also { instance = it }
+                instance ?: Repository(dataBaseHandler).also { instance = it }
             }
     }
 }

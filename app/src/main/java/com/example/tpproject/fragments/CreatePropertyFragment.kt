@@ -1,15 +1,12 @@
 package com.example.tpproject.fragments
 
-import android.R.attr.bitmap
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -22,7 +19,6 @@ import android.widget.ImageView
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -34,11 +30,7 @@ import com.example.tpproject.R
 import com.example.tpproject.data.Property
 import com.example.tpproject.data.UserManager
 import com.example.tpproject.utilities.InjectorUtils
-import com.google.android.material.card.MaterialCardView
 import com.google.android.material.textfield.TextInputLayout
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -64,6 +56,7 @@ class CreatePropertyFragment : Fragment() {
 
 
     var spinnerTitleResult = ""
+    var spinnerLocationResult = ""
     private lateinit var imageAddPhoto: ImageView
     var imageUrl = "";
     private  lateinit var errorText: TextView
@@ -81,7 +74,8 @@ class CreatePropertyFragment : Fragment() {
         imageAddPhoto = view.findViewById<ImageView>(R.id.imageAddPhoto)
         val spinnerTitle = view.findViewById<Spinner>(R.id.spinnerTitle)
         val descriptionEditText = view?.findViewById<EditText>(R.id.edDiscription)
-        val locationEditText = view?.findViewById<EditText>(R.id.edLocation)
+        val spinnerLocation = view.findViewById<Spinner>(R.id.spinnerTitleLocation)
+//        val locationEditText = view?.findViewById<EditText>(R.id.edLocation)
         val priceEditText = view?.findViewById<EditText>(R.id.edPrice)
         val supplierNameEditText = view?.findViewById<EditText>(R.id.edSupplierName)
         val phoneNumberEditText = view?.findViewById<EditText>(R.id.edPhoneNumber)
@@ -89,18 +83,33 @@ class CreatePropertyFragment : Fragment() {
 
         // code for the dropdown butt
         val items = listOf("title", "villa", "apartment", "kabana")
+        val itemsLocation = listOf("location","beirut","jnoub","jbeil")
         // Create an ArrayAdapter using the string array and a default spinner layout
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, items)
+        val adapterLocation = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, itemsLocation)
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        adapterLocation.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         // Find the Spinner in your layout and apply the adapter
-        val dropdown = view.findViewById<Spinner>(R.id.spinnerTitle)  // Replace with your actual spinner ID
-        dropdown.adapter = adapter
+         // Replace with your actual spinner ID
+        spinnerTitle.adapter = adapter
+        spinnerLocation.adapter = adapterLocation
         // Set a listener to handle item selection
-        dropdown.setOnItemSelectedListener(object : AdapterView.OnItemSelectedListener {
+        spinnerTitle.setOnItemSelectedListener(object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 // Handle the selected item here
                 val selectedItem = items[position]
+                // Do something with the selected item
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                // Handle the case where nothing is selected (optional)
+            }
+        })
+
+        spinnerLocation.setOnItemSelectedListener(object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                // Handle the selected item here
+                val selectedItem = itemsLocation[position]
                 // Do something with the selected item
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -140,9 +149,7 @@ class CreatePropertyFragment : Fragment() {
 
         // Set click listener to open the gallery
         imageAddPhoto.setOnClickListener {
-
             pickImageFromGallery()
-
         }
 
 
@@ -153,7 +160,7 @@ class CreatePropertyFragment : Fragment() {
         buttonAddProperty.setOnClickListener {
             if (validateForm(
                     descriptionEditText,
-                    locationEditText,
+                    spinnerLocation,
                     priceEditText,
                     supplierNameEditText,
                     phoneNumberEditText,
@@ -170,7 +177,7 @@ class CreatePropertyFragment : Fragment() {
                 val property = Property(
                     title = spinnerTitleResult,
                     description = descriptionEditText?.text.toString(),
-                    location = locationEditText?.text.toString(),
+                    location = spinnerLocationResult,
                     price = priceEditText?.text.toString().toLong(),
                     active = 1,
                     date = formattedDate,
@@ -191,7 +198,7 @@ class CreatePropertyFragment : Fragment() {
                 {
                     Toast.makeText(requireContext(), "Property added successfully", Toast.LENGTH_SHORT).show()
                     descriptionEditText?.setText("")
-                    locationEditText?.setText("")
+                    spinnerLocation.setSelection(0)
                     priceEditText?.setText("")
                     supplierNameEditText?.setText("")
                     phoneNumberEditText?.setText("")
@@ -217,41 +224,10 @@ class CreatePropertyFragment : Fragment() {
         pickImage.launch(intent)
     }
 
-//    private val pickImage = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-//        if (result.resultCode == Activity.RESULT_OK) {
-//            val data: Intent? = result.data
-//            val selectedImageUri: Uri? = data?.data
-//            // Handle the selected image URI here
-//            try {
-//                val bitmap = BitmapFactory.decodeStream(requireContext().contentResolver.openInputStream(selectedImageUri!!))
-//                // Set the bitmap to your ImageView or perform any other actions
-//                imageAddPhoto.setImageBitmap(bitmap)
-//
-//                Log.e("Response", "the user is: $bitmap")
-//
-//                val imagePath = Functions.saveImageToExternalStorage(requireContext(),bitmap)
-//
-//                imageUrl = imagePath
-//
-//                if(imageUrl != "")
-//                {
-//                    errorText.setText("")
-//                }
-//
-//
-//            } catch (e: IOException) {
-//                e.printStackTrace()
-//            }
-//        }
-//    }
-
-
-
-
 
     private fun validateForm(
         descriptionEditText: EditText?,
-        locationEditText: EditText?,
+        spinnerLocation: Spinner,
         priceEditText: EditText?,
         supplierNameEditText: EditText?,
         phoneNumberEditText: EditText?,
@@ -280,14 +256,34 @@ class CreatePropertyFragment : Fragment() {
             Log.e("Response", "description: ${descriptionEditText?.text}")
         }
 
-        // Validate Location
-        val locationInputLayout = view.findViewById<TextInputLayout>(R.id.locationContainer)
-        if (locationEditText?.text.toString().trim().isEmpty()) {
-            locationInputLayout.error = "Location is required"
-            isValid = false
+        val selectedLocationPosition = spinnerLocation.selectedItemPosition
+        val selectedLocation = if (selectedLocationPosition != AdapterView.INVALID_POSITION) {
+            spinnerLocation.adapter.getItem(selectedLocationPosition).toString()
         } else {
-            locationInputLayout.error = null
+            ""
         }
+
+        if (selectedLocation == "location") {
+            val errorText = "Please select a valid location"
+            val errorView = spinnerLocation.selectedView as TextView
+            errorView.error = errorText
+            errorView.setTextColor(Color.RED)  // Optionally, you can change the text color for better visibility
+            isValid = false
+
+        } else {
+            val errorView = spinnerLocation.selectedView as TextView
+            errorView.error = null
+            spinnerLocationResult = selectedLocation
+        }
+
+        // Validate Location
+//        val locationInputLayout = view.findViewById<TextInputLayout>(R.id.locationContainer)
+//        if (locationEditText?.text.toString().trim().isEmpty()) {
+//            locationInputLayout.error = "Location is required"
+//            isValid = false
+//        } else {
+//            locationInputLayout.error = null
+//        }
 
         // Validate Price
         val priceInputLayout = view.findViewById<TextInputLayout>(R.id.priceContainer)
