@@ -31,6 +31,9 @@ import com.example.tpproject.data.Property
 import com.example.tpproject.data.UserManager
 import com.example.tpproject.utilities.InjectorUtils
 import com.google.android.material.textfield.TextInputLayout
+import com.google.firebase.FirebaseApp
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import java.io.IOException
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -54,7 +57,7 @@ class CreatePropertyFragment : Fragment() {
     }
 
 
-
+    private lateinit var databaseReference: DatabaseReference
     var spinnerTitleResult = ""
     var spinnerLocationResult = ""
     private lateinit var imageAddPhoto: ImageView
@@ -69,6 +72,9 @@ class CreatePropertyFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_property_create, container, false)
+        FirebaseApp.initializeApp(requireContext())
+
+        databaseReference = FirebaseDatabase.getInstance().getReference("properties")
 
         errorText = view.findViewById<TextView>(R.id.TvErrorImage)
         imageAddPhoto = view.findViewById<ImageView>(R.id.imageAddPhoto)
@@ -82,8 +88,8 @@ class CreatePropertyFragment : Fragment() {
         val buttonAddProperty = view.findViewById<Button>(R.id.btnAddProperty)
 
         // code for the dropdown butt
-        val items = listOf("title", "villa", "apartment", "kabana")
-        val itemsLocation = listOf("location","beirut","jnoub","jbeil")
+        val items = listOf("type", "villa", "apartment", "commercial property", "industrial property" , "student housing")
+        val itemsLocation = listOf("location","beirut","jnoub","jbeil","tripoly","nabatiyeh","batroun","khaldeh","saida")
         // Create an ArrayAdapter using the string array and a default spinner layout
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, items)
         val adapterLocation = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, itemsLocation)
@@ -174,6 +180,10 @@ class CreatePropertyFragment : Fragment() {
                 val formattedDate = currentDate.format(dateFormat)
                 imageAddPhoto.setImageResource(R.drawable.addphotoicon)
 
+                fun generateUniqueLongId(): Long {
+                    return System.currentTimeMillis()
+                }
+
                 val property = Property(
                     title = spinnerTitleResult,
                     description = descriptionEditText?.text.toString(),
@@ -181,19 +191,37 @@ class CreatePropertyFragment : Fragment() {
                     price = priceEditText?.text.toString().toLong(),
                     active = 1,
                     date = formattedDate,
-                    id = 1,
+                    id = generateUniqueLongId(),
                     image = imageUrl,
                     user_id = UserManager.getUserId().toInt(),
                     supplier = supplierNameEditText?.text.toString(),
                     phonenumber = phoneNumberEditText?.text.toString().toInt()
                 )
 
+//                val propertyKey = databaseReference.push().key
+//                Log.e("Response", "propertyKey: ${propertyKey}")
+//                if (propertyKey != null) {
+//                    databaseReference.child(propertyKey).setValue(property).addOnCompleteListener{
+//                        Log.e("Response", "added successfu;llly in firease")
+//                    }.addOnFailureListener{ err ->
+//                        Log.e("Response", "failed to add in Firebase: ${err.message}", err)
+//                    }
+//                }
+                val factory = InjectorUtils.providePropertiesViewModelFactory(requireContext())
+                val viewModel = ViewModelProvider(this, factory).get(PropertyViewModel::class.java)
+
+
+
+
+
+
                 //Log.e("Response", "get meme data: $property")
 
                 // Add the property to the database using your ViewModel
-                val factory = InjectorUtils.providePropertiesViewModelFactory(requireContext())
-                val viewModel = ViewModelProvider(this, factory).get(PropertyViewModel::class.java)
-                val addedProperty = viewModel.addProperty(property)
+
+                //val addedProperty = viewModel.addProperty(property)
+
+                val addedProperty = viewModel.insertPropertyToFirebase(property)
                 if(addedProperty > 0)
                 {
                     Toast.makeText(requireContext(), "Property added successfully", Toast.LENGTH_SHORT).show()

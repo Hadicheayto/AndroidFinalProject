@@ -24,6 +24,7 @@ import com.example.tpproject.data.Property
 import com.example.tpproject.R
 import com.example.tpproject.RecycleViewAdapter
 import com.example.tpproject.WelcomeScreenActivity
+import com.example.tpproject.data.Preference
 import com.example.tpproject.data.User
 import com.example.tpproject.data.UserManager
 import com.example.tpproject.profile
@@ -42,6 +43,7 @@ class HomeFragment : Fragment() {
     private lateinit var viewModel: PropertyViewModel
     private var filteredPropertyList: List<Property> = propertyList
     private lateinit var currentUser: User
+    private lateinit var userPreference: Preference
 
 
 
@@ -53,29 +55,95 @@ class HomeFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        //initializeUi()
-    }
+//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+//        super.onViewCreated(view, savedInstanceState)
+//        //initializeUi()
+//    }
 
     private fun initializeUi() {
+        val result = view?.findViewById<TextView>(R.id.tvResult)
         val factory = InjectorUtils.providePropertiesViewModelFactory(requireContext())
         viewModel = ViewModelProvider(this, factory).get(PropertyViewModel::class.java)
 
         //viewModel.deleteAllProperties()
-
+        val List = mutableListOf<Property>()
         viewModel.properties.observe(viewLifecycleOwner, Observer { properties ->
+            //propertyList.clear()
+//            propertyList.addAll(properties)
+//            propertyList.reverse()
+//            Log.e("msg:","msg:${properties}")
             propertyList.clear()
-            propertyList.addAll(properties)
-            propertyList.reverse()
-            Log.e("msg:","msg:${properties}")
-            updateRecyclerView()
-            val result = view?.findViewById<TextView>(R.id.tvResult)
-            result?.text = properties.size.toString() + " Result Found"
+            List.clear()
+            List.addAll(properties)
+
         })
 
+        viewModel.getPreferencesByUserId(UserManager.getUserId()).observe(viewLifecycleOwner, { preferencesList ->
+            if (preferencesList.isNotEmpty()) {
+                userPreference = preferencesList[0]
+
+                if(userPreference.type != "type")
+                {
+                    //val combinedList = mutableListOf<Property>()
+                    // Separate matching and non-matching properties
+
+                    List.reverse()
+
+                    //val List = properties
+
+
+                    val matchingProperties = List.filter { property ->
+                        property.title == userPreference.type
+                    }
+
+                    val firstTwoMatchingProperties = matchingProperties.take(2)
+
+                    var propertyListWithoutFirstTwoMatching = List.toMutableList()
+                    propertyListWithoutFirstTwoMatching.removeAll(firstTwoMatchingProperties)
+
+
+
+                    // Create a new list with matching properties at the beginning
+                    val combinedList = mutableListOf<Property>()
+                    combinedList.addAll(firstTwoMatchingProperties)
+                    combinedList.addAll(propertyListWithoutFirstTwoMatching)
+
+                    Log.e("msg:","combinedList: ${combinedList}")
+
+                    //propertyList.clear()
+                    Log.e("msg:","after clear: ${propertyList}")
+                    propertyList.addAll(combinedList)
+
+                    updateRecyclerView()
+                    //result?.text = propertyList.size.toString() + " Result Found"
+
+                }else
+                {
+                    propertyList.addAll(List)
+                    propertyList.reverse()
+
+                    updateRecyclerView()
+                    //result?.text = propertyList.size.toString() + " Result Found"
+                }
+
+
+
+            } else {
+                propertyList.addAll(List)
+                propertyList.reverse()
+
+                updateRecyclerView()
+                //result?.text = propertyList.size.toString() + " Result Found"
+            }
+        })
+
+
+
+        //result?.text = propertyList.size.toString() + " Result Found"
+        //result?.text = propertyList.size.toString() + " Result Found"
         val user = viewModel.getUserById(UserManager.getUserId())
         if (user != null) {
             currentUser = user
@@ -90,9 +158,13 @@ class HomeFragment : Fragment() {
 
         val profileIcon = view?.findViewById<ImageView>(R.id.ivProfile)
         val searchBar = view?.findViewById<EditText>(R.id.SearchBar)
-        val result = view?.findViewById<TextView>(R.id.tvResult)
+
         val exploreProperty = view?.findViewById<TextView>(R.id.tvExplore)
         initializeUi()
+        val result = view?.findViewById<TextView>(R.id.tvResult)
+        result?.text = propertyList.size.toString() + " Result Found"
+
+
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.setBackgroundColor(Color.TRANSPARENT)
@@ -160,6 +232,8 @@ class HomeFragment : Fragment() {
         recyclerView.adapter = RecycleViewAdapter(filteredPropertyList) { selectedItem: Property ->
             listItemClicked(selectedItem)
         }
+        val result = view?.findViewById<TextView>(R.id.tvResult)
+        result?.text = propertyList.size.toString() + " Result Found"
     }
 
     private fun listItemClicked(property: Property) {

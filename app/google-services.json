@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "786416514225",
-    "project_id": "androidfinalproject-d574d",
-    "storage_bucket": "androidfinalproject-d574d.appspot.com"
+    "project_number": "812261416252",
+    "project_id": "realstateapp-15f34",
+    "storage_bucket": "realstateapp-15f34.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:786416514225:android:3cc28879ff09ff0632de90",
+        "mobilesdk_app_id": "1:812261416252:android:43b636dbac4b0256351239",
         "android_client_info": {
           "package_name": "com.example.tpproject"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCOu9sfeJCun_HWOc_NliokJlYTXRQWatA"
+          "current_key": "AIzaSyAAGhkBeq61NBylmR-Q3Y1qVuZadlhM82Y"
         }
       ],
       "services": {

@@ -46,23 +46,21 @@ class MyPropertiesFragment : Fragment() {
         val factory = InjectorUtils.providePropertiesViewModelFactory(requireContext())
         viewModel = ViewModelProvider(this, factory).get(PropertyViewModel::class.java)
 
+        // Observe the LiveData and update the UI when it changes
+        viewModel.getPropertiesByUserId(UserManager.getUserId()).observe(viewLifecycleOwner, Observer { propertyArray ->
+            propertyList.clear()
+            propertyList.addAll(propertyArray)
+            propertyList.reverse()
 
+            recycleViewProfile.adapter = RecycleViewAdapter(propertyList, true) { selectedItem: Property ->
+                listItemClicked(selectedItem)
+            }
 
-
-        val propertyArray = viewModel.getPropertiesByUserId(UserManager.getUserId())
-        propertyList.clear()
-        propertyList.addAll(propertyArray)
-        propertyList.reverse()
-
-        recycleViewProfile.adapter = RecycleViewAdapter(propertyList,true) { selectedItem: Property ->
-            listItemClicked(selectedItem)
-        }
-
-        Log.e("msg:","size= ${propertyList.size}")
-        if(propertyList.size == 0)
-        {
-            noteEmpty?.text = " You don't have any property"
-        }
+            Log.e("msg:", "size= ${propertyList.size}")
+            if (propertyList.size == 0) {
+                noteEmpty?.text = " You don't have any property"
+            }
+        })
 
         return rootView
     }

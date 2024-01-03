@@ -5,7 +5,7 @@ package com.example.tpproject.data
 //}
 
 data class Property(
-    val id: Long, // Assuming id is of type Long, adjust if needed
+    val id: Long,
     val user_id: Int,
     val date: String,
     val title: String,
@@ -13,10 +13,26 @@ data class Property(
     val location: String,
     val price: Long,
     val image: String,
-    val supplier:String,
-    val phonenumber:Int,
+    val supplier: String,
+    val phonenumber: Int,
     val active: Int
-)
+) {
+    // Add a no-argument constructor
+    constructor() : this(
+        id = 0,
+        user_id = 0,
+        date = "",
+        title = "",
+        description = "",
+        location = "",
+        price = 0,
+        image = "",
+        supplier = "",
+        phonenumber = 0,
+        active = 0
+    )
+}
+
 
 
 data class User(
@@ -37,7 +53,10 @@ data class Preference(
     val location: String,
     val budget: String,
     val capacity: String,
-)
+){
+    // No-argument constructor for Firebase
+    constructor() : this(0, 0, "", "", "", "")
+}
 
 object UserManager {
     private var userId: Long = -1 // Default value when no user is signed in
@@ -52,3 +71,4 @@ object UserManager {
 
 }
 
+data class News(val title: String, val description: String, val imageURL: String, val date: String)

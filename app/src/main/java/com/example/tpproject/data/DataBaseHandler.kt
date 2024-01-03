@@ -88,51 +88,51 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, DATABASE_NAM
         onCreate(p0)
     }
 
-    fun insertProperties(property: Property): Long {
-        val db = writableDatabase
-        val values = ContentValues().apply {
-            put("title", property.title)
-            put("description", property.description)
-            put("imageurl", property.image)
-            put("date", property.date)
-            put("user_id", property.user_id)
-            put("price", property.price)
-            put("location", property.location)
-            put("supplier", property.supplier)
-            put("phonenumber",property.phonenumber)
-            put("active", property.active)
-        }
-        return db.insert(TABLE_NAME, null, values)
-    }
+//    fun insertProperties(property: Property): Long {
+//        val db = writableDatabase
+//        val values = ContentValues().apply {
+//            put("title", property.title)
+//            put("description", property.description)
+//            put("imageurl", property.image)
+//            put("date", property.date)
+//            put("user_id", property.user_id)
+//            put("price", property.price)
+//            put("location", property.location)
+//            put("supplier", property.supplier)
+//            put("phonenumber",property.phonenumber)
+//            put("active", property.active)
+//        }
+//        return db.insert(TABLE_NAME, null, values)
+//    }
 
-    @SuppressLint("Range")
-    fun getAllProperties(): List<Property> {
-        val properties = mutableListOf<Property>()
-        val db = readableDatabase
-        val cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME, null)
-
-        with(cursor) {
-            while (moveToNext()) {
-                val id = cursor.getLong(cursor.getColumnIndexOrThrow("id"))
-                val user_id = cursor.getInt(cursor.getColumnIndexOrThrow("user_id"))
-                val price = cursor.getLong(cursor.getColumnIndex("price"))
-                val location = cursor.getString(cursor.getColumnIndexOrThrow("location"))
-                val title = cursor.getString(cursor.getColumnIndexOrThrow("title"))
-                val description = cursor.getString(cursor.getColumnIndexOrThrow("description"))
-                val imageurl = cursor.getString(cursor.getColumnIndexOrThrow("imageurl"))
-                val date = cursor.getString(cursor.getColumnIndexOrThrow("date"))
-                val supplier = cursor.getString(cursor.getColumnIndexOrThrow("supplier"))
-                val phonenumber = cursor.getInt(cursor.getColumnIndexOrThrow("phonenumber"))
-                val active = cursor.getInt(cursor.getColumnIndexOrThrow("active"))// Convert to boolean if needed
-
-
-                properties.add(Property(id, user_id,date,title,description,location,price,imageurl,supplier,phonenumber,active))
-            }
-            close()
-        }
-
-        return properties
-    }
+//    @SuppressLint("Range")
+//    fun getAllProperties(): List<Property> {
+//        val properties = mutableListOf<Property>()
+//        val db = readableDatabase
+//        val cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME, null)
+//
+//        with(cursor) {
+//            while (moveToNext()) {
+//                val id = cursor.getLong(cursor.getColumnIndexOrThrow("id"))
+//                val user_id = cursor.getInt(cursor.getColumnIndexOrThrow("user_id"))
+//                val price = cursor.getLong(cursor.getColumnIndex("price"))
+//                val location = cursor.getString(cursor.getColumnIndexOrThrow("location"))
+//                val title = cursor.getString(cursor.getColumnIndexOrThrow("title"))
+//                val description = cursor.getString(cursor.getColumnIndexOrThrow("description"))
+//                val imageurl = cursor.getString(cursor.getColumnIndexOrThrow("imageurl"))
+//                val date = cursor.getString(cursor.getColumnIndexOrThrow("date"))
+//                val supplier = cursor.getString(cursor.getColumnIndexOrThrow("supplier"))
+//                val phonenumber = cursor.getInt(cursor.getColumnIndexOrThrow("phonenumber"))
+//                val active = cursor.getInt(cursor.getColumnIndexOrThrow("active"))// Convert to boolean if needed
+//
+//
+//                properties.add(Property(id, user_id,date,title,description,location,price,imageurl,supplier,phonenumber,active))
+//            }
+//            close()
+//        }
+//
+//        return properties
+//    }
 
     fun insertUser(user: User): Long {
 
@@ -186,32 +186,32 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, DATABASE_NAM
         )
     }
 
-    fun getPropertiesByUserId(userId: Long): List<Property> {
-        val properties = mutableListOf<Property>()
-        val db = readableDatabase
-        val cursor = db.rawQuery("SELECT * FROM $TABLE_NAME WHERE $COL_USERID = ?", arrayOf(userId.toString()))
-
-        with(cursor) {
-            while (moveToNext()) {
-                val id = getLong(getColumnIndexOrThrow(COL_ID))
-                val user_id = getInt(getColumnIndexOrThrow(COL_USERID))
-                val price = getLong(getColumnIndexOrThrow(COL_Price))
-                val location = getString(getColumnIndexOrThrow(COL_Location))
-                val title = getString(getColumnIndexOrThrow(COL_TITLE))
-                val description = getString(getColumnIndexOrThrow(COL_DESCRIPTION))
-                val imageurl = getString(getColumnIndexOrThrow(COL_IMAGEURL))
-                val date = getString(getColumnIndexOrThrow(COL_DATE))
-                val supplier = getString(getColumnIndexOrThrow(COL_SUPPLIER))
-                val phonenumber = getInt(getColumnIndexOrThrow(COL_PHONENUMBER))
-                val active = getInt(getColumnIndexOrThrow(COL_Active))
-
-                properties.add(Property(id, user_id, date, title, description, location, price, imageurl, supplier, phonenumber, active))
-            }
-            close()
-        }
-
-        return properties
-    }
+//    fun getPropertiesByUserId(userId: Long): List<Property> {
+//        val properties = mutableListOf<Property>()
+//        val db = readableDatabase
+//        val cursor = db.rawQuery("SELECT * FROM $TABLE_NAME WHERE $COL_USERID = ?", arrayOf(userId.toString()))
+//
+//        with(cursor) {
+//            while (moveToNext()) {
+//                val id = getLong(getColumnIndexOrThrow(COL_ID))
+//                val user_id = getInt(getColumnIndexOrThrow(COL_USERID))
+//                val price = getLong(getColumnIndexOrThrow(COL_Price))
+//                val location = getString(getColumnIndexOrThrow(COL_Location))
+//                val title = getString(getColumnIndexOrThrow(COL_TITLE))
+//                val description = getString(getColumnIndexOrThrow(COL_DESCRIPTION))
+//                val imageurl = getString(getColumnIndexOrThrow(COL_IMAGEURL))
+//                val date = getString(getColumnIndexOrThrow(COL_DATE))
+//                val supplier = getString(getColumnIndexOrThrow(COL_SUPPLIER))
+//                val phonenumber = getInt(getColumnIndexOrThrow(COL_PHONENUMBER))
+//                val active = getInt(getColumnIndexOrThrow(COL_Active))
+//
+//                properties.add(Property(id, user_id, date, title, description, location, price, imageurl, supplier, phonenumber, active))
+//            }
+//            close()
+//        }
+//
+//        return properties
+//    }
 
     fun getUserByEmailAndPassword(email: String, password: String): User? {
 
@@ -259,10 +259,10 @@ class DataBaseHandler(context: Context) : SQLiteOpenHelper(context, DATABASE_NAM
         return db.delete(TABLE_USER, null, null)
     }
 
-    fun deletePropertyById(propertyId: Long): Int {
-        val db = writableDatabase
-        return db.delete(TABLE_NAME, "$COL_ID=?", arrayOf(propertyId.toString()))
-    }
+//    fun deletePropertyById(propertyId: Long): Int {
+//        val db = writableDatabase
+//        return db.delete(TABLE_NAME, "$COL_ID=?", arrayOf(propertyId.toString()))
+//    }
 
     fun insertPreference(preference: Preference): Long {
         val db = writableDatabase

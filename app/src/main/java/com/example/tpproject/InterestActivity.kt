@@ -9,14 +9,21 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.Spinner
+import androidx.lifecycle.ViewModelProvider
 import com.example.tpproject.data.Preference
 import com.example.tpproject.data.UserManager
 import com.example.tpproject.fragments.HomeFragment
+import com.example.tpproject.utilities.InjectorUtils
 
 class InterestActivity : AppCompatActivity() {
+
+    private lateinit var viewModel: PropertyViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_interest)
+
+        val factory = InjectorUtils.providePropertiesViewModelFactory(this)
+        viewModel = ViewModelProvider(this, factory).get(PropertyViewModel::class.java)
 
 
         val spinnerType = findViewById<Spinner>(R.id.spinnerType)
@@ -27,9 +34,8 @@ class InterestActivity : AppCompatActivity() {
         val btnSkip = findViewById<Button>(R.id.btnSkip)
 
 
-
-        val itemsType = listOf("type", "villa", "apartment", "kabana")
-        val itemsLocation = listOf("location","beirut","jnoub","jbeil")
+        val itemsType = listOf("type", "villa", "apartment", "commercial property", "industrial property" , "student housing")
+        val itemsLocation = listOf("location","beirut","jnoub","jbeil","tripoly","nabatiyeh","batroun","khaldeh","saida")
         val itemsBudget = listOf("Budget", "0-50000$", "50000-100000$", "100000-200000$","200000-300000$","300000-400000$","400000-500000$","500000-1000000$",">1000000$ ")
         val itemsCapacity = listOf("Capacity","0-100m","100-200m","200-300m","300-400m","400-500m",">500m")
 
@@ -94,8 +100,6 @@ class InterestActivity : AppCompatActivity() {
 
         btnContinue.setOnClickListener{
 
-
-
             val selectedTypePosition = spinnerType.selectedItemPosition
             val selectedType = if (selectedTypePosition != AdapterView.INVALID_POSITION) {
                 spinnerType.adapter.getItem(selectedTypePosition).toString()
@@ -124,9 +128,15 @@ class InterestActivity : AppCompatActivity() {
                 ""
             }
 
+
+
             val preference = Preference(0, UserManager.getUserId(),selectedType,selectedLocation,selectedBudget,selectedCapacity)
 
+
+
             Log.e("Response", "preference=: $preference")
+
+            viewModel.insertPreferenceToFirebase(preference)
 
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)

@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.example.tpproject.data.User
+import com.example.tpproject.data.UserManager
 import com.example.tpproject.utilities.InjectorUtils
 import com.google.android.material.textfield.TextInputLayout
 
@@ -59,12 +60,22 @@ class RegisterActivity : AppCompatActivity() {
 
                     if(insertUser > 0)
                 {
+                    val user = viewModel.getUserByEmailAndPassword(email.text.toString().lowercase(),password.text.toString())
+
+                    if (user != null)
+                    {
+                        UserManager.setUserId(user.id)
+                    }else
+                    {
+                        Toast.makeText(this, "wrong credentiels", Toast.LENGTH_SHORT).show()
+                    }
+
                     Toast.makeText(this, "register Succesfully", Toast.LENGTH_SHORT).show()
                     fname.setText("")
                     lname.setText("")
                     email.setText("")
                     password.setText("")
-                    val intent = Intent(this, SignInActivity::class.java)
+                    val intent = Intent(this, InterestActivity::class.java)
                     startActivity(intent)
                 }
                 else
